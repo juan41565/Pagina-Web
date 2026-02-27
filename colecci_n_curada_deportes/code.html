@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vogue &amp; Virtue - Collections</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9e406",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#23210f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-10 py-4 bg-background-light dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="text-primary">
+<span class="material-symbols-outlined text-4xl">diamond</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-xl font-extrabold leading-tight tracking-tight uppercase">Vogue &amp; Virtue</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-center max-w-xl px-8">
+<label class="flex flex-col w-full h-10">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full overflow-hidden">
+<div class="text-slate-500 bg-slate-100 dark:bg-slate-800 flex items-center justify-center pl-4 border-none">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-0 placeholder:text-slate-500 px-4 py-2 text-sm" placeholder="Search curated lifestyle..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">shopping_cart</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">person</span>
+</button>
+<div class="ml-2 bg-center bg-no-repeat aspect-square bg-cover rounded-full h-10 w-10 border-2 border-primary" data-alt="User profile avatar portrait" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBixBrptzg7eKOW8pr9YAXWbbHobrmNeW-271J1M5wuVFfQXn4Ih-wfLLZ_a9lNOt2QX9C7l-aXI1h2MklHRbNnpQbcJ3NU_T1MyXOLeX-O4MbgIaWwEs2zwlGRZDwyZbeqmN4sIsEXjR4konU819rs9cdSdgO4VkLpHVtvrpUaYb8LPQMEtiTp5kOPkM0178bz5iC2vJE85NkY22pr7blSmGptIHc4yUkXGwGbqvytvzfAcxKLamTtqMhatOUPg4rqJaslrvrd");'></div>
+</div>
+</header>
+<main class="flex-1 flex flex-col md:flex-row max-w-[1440px] mx-auto w-full">
+<aside class="w-full md:w-64 p-6 border-r border-slate-200 dark:border-slate-800 space-y-8">
+<div>
+<h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Categories</h3>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary font-semibold text-sm" href="#">
+<span class="material-symbols-outlined text-lg">grid_view</span> All Products
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-sm" href="#">
+<span class="material-symbols-outlined text-lg">coffee</span> Home &amp; Kitchen
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-sm" href="#">
+<span class="material-symbols-outlined text-lg">devices</span> Technology
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-sm" href="#">
+<span class="material-symbols-outlined text-lg">apparel</span> Fashion
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-sm" href="#"><span class="material-symbols-outlined text-lg">sports_soccer</span> Sports</a>
+</div>
+</div>
+<div>
+<h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Price Range</h3>
+<div class="px-2">
+<input class="w-full h-1 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" type="range"/>
+<div class="flex justify-between mt-2 text-xs text-slate-500">
+<span>$0</span>
+<span>$1,000+</span>
+</div>
+</div>
+</div>
+
+</aside>
+<section class="flex-1 p-6">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+<div>
+<h1 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100">Curated Collection</h1>
+<p class="text-slate-500 mt-1">Discover items that define elevated living.</p>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-semibold border border-transparent hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-lg">swap_vert</span> Sort: Featured
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm font-semibold border border-transparent hover:border-primary/50 transition-all">
+<span class="material-symbols-outlined text-lg">filter_list</span> Filters
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="group flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary transition-all">
+<div class="relative w-full aspect-square overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800">
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-primary text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">New Arrival</span>
+</div>
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Modern minimalist matte black coffee maker" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC88HzS0_h1-KV7j-LtqWV7PBh4l4l-HnSkaKjyXR1yltm-4asEN21KkQtCP56pqApq4dLsMzceIGLIjVUvZ6unznFOQ8SqEbek1ga0f49c-EZWqswuqCTVsCD5-d6OpWKQFtz3FbIr8_Q0XxrueF9Qqf1GIuxRBWf5V_jxj15pCpEONN1LTfWGTxfYVN5QZYKyhaA1r-CSRNdUcZCKS6wcVn4czkRUNSVYnkwsWmM9_AlcfL34A6TFMOBxrRD_QglDjcfORobo");'></div>
+</div>
+<div class="flex flex-col px-1 pb-2">
+<div class="flex justify-between items-start">
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">Minimalist Coffee Maker</h3>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<p class="text-slate-500 text-sm mt-1">Home &amp; Kitchen</p>
+<div class="flex items-center justify-between mt-4">
+<span class="text-primary text-xl font-bold">$120.00</span>
+<button class="bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary transition-all">
+<div class="relative w-full aspect-square overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800">
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">Bestseller</span>
+</div>
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Luxury premium soy candle in amber glass" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCIAvMzOB4eWELpPuDMkj6hqg69CwifZviXKT8M-2z2_VYnuoIsUyjNzlmRnaZbC_qcQbNNFRh2PrLHcOxYqdti9i2IG8tG8vXpXi92ehMgxYoQyJxYn5XaO_SpzdRkXLj0TTzMWlTyXXHtk0zjzcaWdg2yt0-ZzgwQWWIIAsj77Lq_2k7T-arz3KE9IQYPq4K7YhmIiCSlZLENOrFSRAcX7ZqHvqmANe-fVYYcg_4UNwkMfEWAGaDK-wyDXm4lbxwAD0hnS92R");'></div>
+</div>
+<div class="flex flex-col px-1 pb-2">
+<div class="flex justify-between items-start">
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">Premium Soy Candle</h3>
+<button class="text-primary transition-colors">
+<span class="material-symbols-outlined fill-1">favorite</span>
+</button>
+</div>
+<p class="text-slate-500 text-sm mt-1">Sports</p>
+<div class="flex items-center justify-between mt-4">
+<span class="text-primary text-xl font-bold">$35.00</span>
+<button class="bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary transition-all">
+<div class="relative w-full aspect-square overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800">
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-primary text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">Staff Pick</span>
+</div>
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Brushed metal noise cancelling headphones" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuACoDZOVMJWz0UC901A1VWzMQxRPzC1DDxx1yAg639ky6wtAX1BVitZ6M67OBuW8Jg3lDRrljeoAX0GEieOAd3Th8vXQ1Rxy0QiEZft5opI-SUGEzB_LhuKQF3MR5eaFkodFeB_Z0Z7K7JzUhOiLTLtZmUUYmcwaEKMJuIRExWf8tW3Eur4JcVN0hTt-b9KeMiOZd6qfH3FT0yJXeTYLtA0wqCT15m10jqRloPPVA2azRS0ly79U3yBnFImNU9AOhW6iyOzw4xA");'></div>
+</div>
+<div class="flex flex-col px-1 pb-2">
+<div class="flex justify-between items-start">
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">High-end Headphones</h3>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<p class="text-slate-500 text-sm mt-1">Technology</p>
+<div class="flex items-center justify-between mt-4">
+<span class="text-primary text-xl font-bold">$350.00</span>
+<button class="bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary transition-all">
+<div class="relative w-full aspect-square overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800">
+<div class="absolute top-3 left-3 z-10">
+<span class="bg-primary text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">Limited Edition</span>
+</div>
+<div class="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-110 transition-transform duration-500" data-alt="Silk scarf with intricate geometric patterns" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8MgqTQ7b4lmA1Bzwe92uBu8v_UA-aplslVdubZc0-H8vQIU4RWvJ4FerAqaivmWcw6X_BQDHAnQc-YwEfMY2okIpPDMPgbp4WiSAPjsLnolQR6H5_dNfJOBDc6ro-z_uo5s7x4ENm05dhxHmLp9LUbrqGVE1yISx5Coweb5VfXWIOQjLf4Hqqy_RAesIVL9sKWVtJmcx8y4r_ZbWCEs7e7z8oQYUibh7tUzG3G8QJxpvSwwJ8wR2AMNg7-rvAqGZZGnRHORvE");'></div>
+</div>
+<div class="flex flex-col px-1 pb-2">
+<div class="flex justify-between items-start">
+<h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">Silk Pattern Scarf</h3>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<p class="text-slate-500 text-sm mt-1">Fashion</p>
+<div class="flex items-center justify-between mt-4">
+<span class="text-primary text-xl font-bold">$85.00</span>
+<button class="bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center">
+<nav class="flex items-center gap-1">
+<button class="flex items-center justify-center w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 hover:border-primary">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-primary text-slate-900 font-bold">1</button>
+<button class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-primary">2</button>
+<button class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-primary">3</button>
+<span class="px-2 text-slate-500">...</span>
+<button class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-primary">12</button>
+<button class="flex items-center justify-center w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 hover:border-primary">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</nav>
+</div>
+</section>
+</main>
+<footer class="bg-slate-100 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 mt-12 py-12 px-6">
+<div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-4">
+<div class="text-primary">
+<span class="material-symbols-outlined text-3xl">diamond</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-extrabold uppercase tracking-tight">Vogue &amp; Virtue</h2>
+</div>
+<p class="text-slate-500 text-sm leading-relaxed">
+                        Redefining modern luxury through curated lifestyle pieces that balance aesthetic purity with daily utility.
+                    </p>
+</div>
+<div>
+<h4 class="text-slate-900 dark:text-slate-100 font-bold mb-4 uppercase text-xs tracking-widest">Shop</h4>
+<ul class="space-y-2 text-sm text-slate-500">
+<li><a class="hover:text-primary" href="#">All Collections</a></li>
+<li><a class="hover:text-primary" href="#">New Arrivals</a></li>
+<li><a class="hover:text-primary" href="#">Bestsellers</a></li>
+<li><a class="hover:text-primary" href="#">Gift Cards</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-slate-900 dark:text-slate-100 font-bold mb-4 uppercase text-xs tracking-widest">Support</h4>
+<ul class="space-y-2 text-sm text-slate-500">
+<li><a class="hover:text-primary" href="#">Contact Us</a></li>
+<li><a class="hover:text-primary" href="#">Shipping Policy</a></li>
+<li><a class="hover:text-primary" href="#">Returns &amp; Exchanges</a></li>
+<li><a class="hover:text-primary" href="#">FAQ</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-slate-900 dark:text-slate-100 font-bold mb-4 uppercase text-xs tracking-widest">Newsletter</h4>
+<p class="text-sm text-slate-500 mb-4">Join for exclusive early access and luxury insights.</p>
+<div class="flex gap-2">
+<input class="bg-white dark:bg-slate-800 border-none rounded-lg text-sm flex-1 focus:ring-1 focus:ring-primary px-3" placeholder="Email address" type="email"/>
+<button class="bg-primary text-slate-900 px-4 py-2 rounded-lg font-bold text-sm">Join</button>
+</div>
+</div>
+</div>
+<div class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+<p>© 2024 Vogue &amp; Virtue Lifestyle. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

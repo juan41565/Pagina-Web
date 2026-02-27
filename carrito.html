@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Vogue & Virtue - Cart</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f9e406",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#23210f",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+    <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+        <header
+            class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-6 md:px-10 py-4 bg-background-light dark:bg-background-dark sticky top-0 z-50">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="flex items-center gap-4">
+                    <div class="text-primary">
+                        <span class="material-symbols-outlined text-4xl">diamond</span>
+                    </div>
+                    <h2
+                        class="text-slate-900 dark:text-slate-100 text-xl font-extrabold leading-tight tracking-tight uppercase">
+                        Vogue &amp; Virtue</h2>
+                </a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="coleccion.html" class="text-sm font-medium hover:text-primary transition-colors">Continue
+                    Shopping</a>
+            </div>
+        </header>
+
+        <main class="flex-1 max-w-4xl mx-auto w-full p-6 py-12">
+            <h1 class="text-4xl font-extrabold mb-8">Your Bag</h1>
+
+            <div id="cart-items" class="space-y-6">
+                <!-- Cart items will be rendered here via JS -->
+                <p class="text-slate-500 text-center py-12">Your bag is empty.</p>
+            </div>
+
+            <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col items-end gap-6">
+                <div class="flex justify-between w-full max-w-xs text-xl font-bold">
+                    <span>Total</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <button
+                    class="w-full max-w-xs bg-primary text-slate-900 py-4 rounded-xl font-bold hover:brightness-110 transition-all">
+                    Checkout Now
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/api.js"></script>
+    <script src="js/carrito.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const totalElement = document.getElementById('cart-total');
+            const cart = getCart();
+
+            if (cart.length > 0) {
+                cartItemsContainer.innerHTML = '';
+                let total = 0;
+                cart.forEach(item => {
+                    const price = parseFloat(item.price.replace('$', '').replace(',', ''));
+                    total += price * item.quantity;
+
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex items-center gap-6 p-4 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800';
+                    itemElement.innerHTML = `
+                        <div class="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="${item.image}" class="w-full h-full object-contain">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg">${item.name}</h3>
+                            <p class="text-slate-500 font-bold">${item.price}</p>
+                            <div class="flex items-center gap-4 mt-2">
+                                <span class="text-sm text-slate-400">Qty: ${item.quantity}</span>
+                            </div>
+                        </div>
+                        <button class="text-slate-400 hover:text-red-500 transition-colors">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
+                totalElement.textContent = `$${total.toLocaleString()}`;
+            }
+        });
+    </script>
+</body>
+
+</html>
