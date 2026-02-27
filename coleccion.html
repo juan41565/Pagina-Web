@@ -125,38 +125,10 @@
                         </button>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    <!-- Product 1 -->
-                    <div
-                        class="group flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary transition-all">
-                        <div
-                            class="relative w-full aspect-square overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800">
-                            <div class="absolute top-3 left-3 z-10">
-                                <span
-                                    class="bg-primary text-slate-900 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter">New
-                                    Arrival</span>
-                            </div>
-                            <div class="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-110 transition-transform duration-500"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC88HzS0_h1-KV7j-LtqWV7PBh4l4l-HnSkaKjyXR1yltm-4asEN21KkQtCP56pqApq4dLsMzceIGLIjVUvZ6unznFOQ8SqEbek1ga0f49c-EZWqswuqCTVsCD5-d6OpWKQFtz3FbIr8_Q0XxrueF9Qqf1GIuxRBWf5V_jxj15pCpEONN1LTfWGTxfYVN5QZYKyhaA1r-CSRNdUcZCKS6wcVn4czkRUNSVYnkwsWmM9_AlcfL34A6TFMOBxrRD_QglDjcfORobo");'>
-                            </div>
-                        </div>
-                        <div class="flex flex-col px-1 pb-2">
-                            <div class="flex justify-between items-start">
-                                <h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">Minimalist Coffee Maker
-                                </h3>
-                                <button class="text-slate-400 hover:text-primary transition-colors">
-                                    <span class="material-symbols-outlined">favorite</span>
-                                </button>
-                            </div>
-                            <p class="text-slate-500 text-sm mt-1">Home &amp; Kitchen</p>
-                            <div class="flex items-center justify-between mt-4">
-                                <span class="text-primary text-xl font-bold">$120.00</span>
-                                <button
-                                    class="add-to-cart bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
-                                    <span class="material-symbols-outlined text-xl">add_shopping_cart</span>
-                                </button>
-                            </div>
-                        </div>
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Products will be loaded here -->
+                    <div class="col-span-full py-20 text-center">
+                        <div class="animate-pulse text-slate-500">Loading curated collection...</div>
                     </div>
                 </div>
                 <div class="mt-12 flex justify-center">
