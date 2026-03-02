@@ -23,27 +23,84 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Load products if on collection page
     const productGrid = document.getElementById('product-grid');
+    let allProducts = [];
+
     if (productGrid) {
         console.log('Product grid found, starting fetch...');
         try {
-            const products = await fetchProducts();
-            console.log('Products received by app:', products);
-            if (products && products.length > 0) {
-                renderProducts(products);
+            allProducts = await fetchProducts();
+            console.log('Products received by app:', allProducts);
+            if (allProducts && allProducts.length > 0) {
+                // Check for category in URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryParam = urlParams.get('category');
+
+                if (categoryParam) {
+                    const filtered = allProducts.filter(p => String(p.id_tipo_producto) === String(categoryParam));
+                    renderProducts(filtered);
+                    setupCategoryFilters(categoryParam);
+                } else {
+                    renderProducts(allProducts);
+                    setupCategoryFilters('all');
+                }
             } else {
-                console.log('No products to render');
-                productGrid.innerHTML = `
-                    <div class="col-span-full py-20 text-center">
-                        <p class="text-slate-500">No products found in the database. Please check your Supabase connection and ensure products are "active" (estado: true).</p>
-                    </div>
-                `;
+                renderEmptyState();
             }
         } catch (err) {
             console.error('App error during product load:', err);
         }
     }
 
+    function setupCategoryFilters(activeCategory = 'all') {
+        const filters = document.querySelectorAll('.category-btn');
+
+        // Internal helper to set active class
+        const setActiveUI = (category) => {
+            filters.forEach(f => {
+                if (f.dataset.category === String(category)) {
+                    f.classList.add('bg-primary/10', 'text-primary', 'font-semibold');
+                    f.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+                } else {
+                    f.classList.remove('bg-primary/10', 'text-primary', 'font-semibold');
+                    f.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+                }
+            });
+        };
+
+        setActiveUI(activeCategory);
+
+        filters.forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                const category = btn.dataset.category;
+
+                setActiveUI(category);
+
+                // Filter products
+                if (category === 'all') {
+                    renderProducts(allProducts);
+                } else {
+                    const filtered = allProducts.filter(p => String(p.id_tipo_producto) === String(category));
+                    renderProducts(filtered);
+                }
+            };
+        });
+    }
+
+    function renderEmptyState() {
+        productGrid.innerHTML = `
+            <div class="col-span-full py-20 text-center">
+                <p class="text-slate-500">No products found for this category.</p>
+            </div>
+        `;
+    }
+
     function renderProducts(products) {
+        if (!products || products.length === 0) {
+            renderEmptyState();
+            return;
+        }
+
         productGrid.innerHTML = products.map(product => `
             <div class="group flex flex-col gap-4 bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-primary transition-all">
                 <div class="relative w-full aspect-square overflow-hidden rounded-lg bg-slate-100 dark:bg-slate-800">
