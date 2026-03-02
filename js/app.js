@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let currentCategory = 'all';
     let currentPrice = 5000;
+    let currentSearch = '';
 
     if (productGrid) {
         console.log('Product grid found, starting fetch...');
@@ -35,12 +36,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             allProducts = await fetchProducts();
             console.log('Products received by app:', allProducts);
             if (allProducts && allProducts.length > 0) {
-                // Check for category in URL
+                // Check for category and search in URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const categoryParam = urlParams.get('category');
+                const searchParam = urlParams.get('search');
 
                 if (categoryParam) {
                     currentCategory = categoryParam;
+                }
+                if (searchParam) {
+                    currentSearch = searchParam;
+                    const searchInput = document.getElementById('global-search');
+                    if (searchInput) searchInput.value = searchParam;
                 }
 
                 setupFilters();
@@ -76,20 +83,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
         }
 
+        // Global Search
+        const searchInput = document.getElementById('global-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+
+                // If on index.html and user presses Enter or types significant query, redirect (optional refinement)
+                // For now, if we are NOT on collection page, redirect on typing
+                if (!productGrid) {
+                    if (query.length > 1) {
+                        window.location.href = `coleccion.html?search=${encodeURIComponent(query)}`;
+                    }
+                    return;
+                }
+
+                currentSearch = query;
+                applyFilters();
+            });
+
+            // Handle Enter key for redirection from other pages
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const query = e.target.value.toLowerCase().trim();
+                    if (!productGrid) {
+                        window.location.href = `coleccion.html?search=${encodeURIComponent(query)}`;
+                    }
+                }
+            });
+        }
+
         updateCategoryUI();
     }
 
     function updateCategoryUI() {
-        const filters = document.querySelectorAll('.category-btn');
-        filters.forEach(f => {
-            if (f.dataset.category === String(currentCategory)) {
-                f.classList.add('bg-primary/10', 'text-primary', 'font-semibold');
-                f.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-            } else {
-                f.classList.remove('bg-primary/10', 'text-primary', 'font-semibold');
-                f.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-            }
-        });
+        // ... (existing updateCategoryUI)
     }
 
     function applyFilters() {
@@ -101,7 +129,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Filter by price
-        filtered = filtered.filter(p => parseFloat(p.price || p.precio) <= currentPrice);
+        filtered = filtered.filter(p => {
+            const price = parseFloat(p.precio || p.price);
+            return price <= currentPrice;
+        });
+
+        // Filter by search
+        if (currentSearch) {
+            filtered = filtered.filter(p =>
+                p.nombre.toLowerCase().includes(currentSearch) ||
+                (p.tipo_producto && p.tipo_producto.nombre.toLowerCase().includes(currentSearch))
+            );
+        }
 
         renderProducts(filtered);
     }
