@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const product = {
                     id: btn.dataset.id || Math.random().toString(36).substr(2, 9),
                     name: container.querySelector('h3, h4').textContent,
-                    price: container.querySelector('.text-primary, p.font-bold').textContent,
+                    price: btn.dataset.price ? `$${parseFloat(btn.dataset.price).toLocaleString()}` : container.querySelector('.text-primary, p.font-bold').textContent,
+                    numericPrice: parseFloat(btn.dataset.price || container.querySelector('.text-primary, p.font-bold').textContent.replace(/[^\d.]/g, '')),
                     image: container.querySelector('img, div[style*="background-image"]').style.backgroundImage
                         ? container.querySelector('div[style*="background-image"]').style.backgroundImage.slice(5, -2)
                         : container.querySelector('img').src
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderEmptyState() {
         productGrid.innerHTML = `
             <div class="col-span-full py-20 text-center">
-                <p class="text-slate-500">No products found for this category.</p>
+                <p class="text-slate-500">No se encontraron productos para esta categoría.</p>
             </div>
         `;
     }
@@ -136,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p class="text-slate-500 text-sm mt-1">${product.tipo_producto ? product.tipo_producto.nombre : 'General'}</p>
                     <div class="flex items-center justify-between mt-4">
                         <span class="text-primary text-xl font-bold">$${parseFloat(product.precio).toLocaleString()}</span>
-                        <button data-id="${product.id_producto}" class="add-to-cart bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
+                        <button data-id="${product.id_producto}" data-price="${product.precio}" class="add-to-cart bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
                             <span class="material-symbols-outlined text-xl">add_shopping_cart</span>
                         </button>
                     </div>

@@ -43,11 +43,11 @@
                 </div>
                 <nav class="hidden md:flex items-center gap-8">
                     <a class="text-sm font-medium text-primary hover:text-primary transition-colors"
-                        href="index.html">Home</a>
+                        href="index.html">Inicio</a>
                     <a id="categories-btn" class="text-sm font-medium hover:text-primary transition-colors"
-                        href="coleccion.html">Categories</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Curated</a>
-                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Journal</a>
+                        href="coleccion.html">Categorías</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Curación</a>
+                    <a class="text-sm font-medium hover:text-primary transition-colors" href="#">Diario</a>
                 </nav>
             </div>
             <div class="flex items-center gap-6">
@@ -55,12 +55,14 @@
                     class="hidden lg:flex items-center bg-slate-100 dark:bg-primary/5 rounded-full px-4 py-2 border border-transparent focus-within:border-primary/30 transition-all">
                     <span class="material-symbols-outlined text-slate-400 text-xl">search</span>
                     <input class="bg-transparent border-none focus:ring-0 text-sm w-48 placeholder:text-slate-500"
-                        placeholder="Search curated lifestyle..." type="text" />
+                        placeholder="Buscar estilo de vida..." type="text" />
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="carrito.html"
-                        class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary/20 transition-colors">
+                        class="relative flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary/20 transition-colors">
                         <span class="material-symbols-outlined text-xl">shopping_cart</span>
+                        <span
+                            class="shopping-bag-count absolute -top-1 -right-1 bg-primary text-slate-900 text-[10px] font-bold h-4 min-w-[1rem] flex items-center justify-center rounded-full px-1 hidden">0</span>
                     </a>
                     <button
                         class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary/20 transition-colors">
@@ -79,22 +81,22 @@
                 </div>
             </div>
             <div class="relative h-full max-w-7xl mx-auto px-6 flex flex-col justify-center items-start">
-                <span class="text-primary font-bold tracking-[0.2em] uppercase text-xs mb-4">Established
-                    Sophistication</span>
-                <h2 class="text-5xl md:text-7xl font-light leading-tight mb-6 max-w-2xl">Elevated Living for the <span
-                        class="italic font-serif">Modern Aesthete</span></h2>
+                <span class="text-primary font-bold tracking-[0.2em] uppercase text-xs mb-4">Sofisticación
+                    Establecida</span>
+                <h2 class="text-5xl md:text-7xl font-light leading-tight mb-6 max-w-2xl">Vida Elevada para el <span
+                        class="italic font-serif">Esteta Moderno</span></h2>
                 <p class="text-lg text-slate-300 max-w-lg mb-10 leading-relaxed">
-                    Discover a curated fusion of high-end fashion, avant-garde technology, and artisanal home decor.
-                    Every piece selected for its virtue and vogue.
+                    Descubre una fusión curada de moda de alta gama, tecnología de vanguardia y decoración artesanal.
+                    Cada pieza seleccionada por su virtud y elegancia.
                 </p>
                 <div class="flex gap-4">
                     <button
                         class="bg-primary text-background-dark px-10 py-4 font-bold rounded-lg hover:scale-105 transition-transform">
-                        Explore Collection
+                        Explorar Colección
                     </button>
                     <button
                         class="border border-slate-100/30 backdrop-blur-sm text-white px-10 py-4 font-bold rounded-lg hover:bg-white/10 transition-colors">
-                        View Lookbook
+                        Ver Catálogo
                     </button>
                 </div>
             </div>
@@ -102,12 +104,12 @@
         <section class="max-w-7xl mx-auto px-6 py-24">
             <div class="flex items-end justify-between mb-12">
                 <div>
-                    <h3 class="text-3xl font-light mb-2">Shop by Category</h3>
-                    <p class="text-slate-500">Tailored selections for every facet of life.</p>
+                    <h3 class="text-3xl font-light mb-2">Comprar por Categoría</h3>
+                    <p class="text-slate-500">Selecciones a medida para cada faceta de la vida.</p>
                 </div>
                 <a class="text-primary flex items-center gap-2 font-semibold hover:underline decoration-2 underline-offset-8"
                     href="coleccion.html">
-                    View All <span class="material-symbols-outlined">arrow_forward</span>
+                    Ver Todo <span class="material-symbols-outlined">arrow_forward</span>
                 </a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -119,8 +121,8 @@
                     <div
                         class="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent">
                         <span class="material-symbols-outlined text-primary mb-3 text-3xl">home_max</span>
-                        <h4 class="text-xl font-bold mb-1">Home Decor</h4>
-                        <p class="text-slate-300 text-sm">Artisanal Objects</p>
+                        <h4 class="text-xl font-bold mb-1">Hogar</h4>
+                        <p class="text-slate-300 text-sm">Objetos Artesanales</p>
                     </div>
                 </a>
                 <!-- Tech & Audio -->
@@ -132,8 +134,8 @@
                         class="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent">
                         <span
                             class="material-symbols-outlined text-primary mb-3 text-3xl">settings_input_component</span>
-                        <h4 class="text-xl font-bold mb-1">Tech &amp; Audio</h4>
-                        <p class="text-slate-300 text-sm">Precision Sound</p>
+                        <h4 class="text-xl font-bold mb-1">Electrónica</h4>
+                        <p class="text-slate-300 text-sm">Sonido de Precisión</p>
                     </div>
                 </a>
                 <!-- Fashion -->
@@ -144,8 +146,8 @@
                     <div
                         class="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent">
                         <span class="material-symbols-outlined text-primary mb-3 text-3xl">apparel</span>
-                        <h4 class="text-xl font-bold mb-1">Fashion</h4>
-                        <p class="text-slate-300 text-sm">Signature Apparel</p>
+                        <h4 class="text-xl font-bold mb-1">Ropa</h4>
+                        <p class="text-slate-300 text-sm">Ropa de Autor</p>
                     </div>
                 </a>
                 <!-- Sports -->
@@ -156,8 +158,8 @@
                     <div
                         class="absolute inset-0 p-8 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent">
                         <span class="material-symbols-outlined text-primary mb-3 text-3xl">sports_soccer</span>
-                        <h4 class="text-xl font-bold mb-1">Sports</h4>
-                        <p class="text-slate-300 text-sm">Performance Gear</p>
+                        <h4 class="text-xl font-bold mb-1">Deportes</h4>
+                        <p class="text-slate-300 text-sm">Equipo de Rendimiento</p>
                     </div>
                 </a>
             </div>
@@ -165,9 +167,10 @@
         <section class="bg-slate-100 dark:bg-primary/5 py-24">
             <div class="max-w-7xl mx-auto px-6">
                 <div class="text-center mb-16">
-                    <h3 class="text-4xl font-light mb-4">Featured Essentials</h3>
-                    <p class="text-slate-500 max-w-2xl mx-auto">Selected by our curators for their exceptional design
-                        and enduring quality.</p>
+                    <h3 class="text-4xl font-light mb-4">Esenciales Destacados</h3>
+                    <p class="text-slate-500 max-w-2xl mx-auto">Seleccionados por nuestros curadores por su diseño
+                        excepcional
+                        y calidad duradera.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                     <!-- Product 1 -->
@@ -235,30 +238,30 @@
                 </div>
                 <div>
                     <h3 class="text-primary font-bold tracking-[0.2em] uppercase text-xs mb-4">V&amp;V Journal</h3>
-                    <h2 class="text-4xl font-light mb-6">Defining the Aesthetics of Tomorrow</h2>
+                    <h2 class="text-4xl font-light mb-6">Definiendo la Estética del Mañana</h2>
                     <p class="text-slate-500 mb-8 leading-relaxed">
-                        Read our latest entries on the intersection of craftsmanship, utility, and pure luxury. We
-                        interview the designers who are shaping the modern lifestyle.
+                        Lee nuestras últimas entradas sobre el cruce entre artesanía, utilidad y puro lujo.
+                        Entrevistamos a los diseñadores que están dando forma al estilo de vida moderno.
                     </p>
                     <button
                         class="group flex items-center gap-3 font-bold border-b-2 border-primary pb-2 hover:gap-5 transition-all">
-                        Read the Journal <span class="material-symbols-outlined text-primary">trending_flat</span>
+                        Leer el Diario <span class="material-symbols-outlined text-primary">trending_flat</span>
                     </button>
                 </div>
             </div>
         </section>
         <section class="border-t border-slate-200 dark:border-primary/10">
             <div class="max-w-7xl mx-auto px-6 py-20 text-center">
-                <h3 class="text-2xl font-light mb-8">Join the Vanguard</h3>
-                <p class="text-slate-500 mb-10 max-w-lg mx-auto">Receive curated arrivals and exclusive access to
-                    limited-run collaborations.</p>
+                <h3 class="text-2xl font-light mb-8">Únete a la Vanguardia</h3>
+                <p class="text-slate-500 mb-10 max-w-lg mx-auto">Recibe novedades curadas y acceso exclusivo a
+                    colaboraciones de edición limitada.</p>
                 <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                     <input
                         class="flex-1 bg-white dark:bg-background-dark border border-slate-300 dark:border-primary/20 rounded-lg px-6 py-3 focus:ring-primary focus:border-primary"
-                        placeholder="Email address" type="email" />
+                        placeholder="Correo electrónico" type="email" />
                     <button
                         class="bg-primary text-background-dark font-bold px-8 py-3 rounded-lg hover:brightness-110 transition-all">
-                        Subscribe
+                        Suscribirse
                     </button>
                 </div>
             </div>
@@ -273,12 +276,12 @@
                         <h2 class="text-xl font-extrabold tracking-tighter uppercase">Vogue &amp; Virtue</h2>
                     </div>
                     <p class="text-slate-500 text-sm max-w-sm leading-relaxed">
-                        The definitive destination for the curated life. Bringing together the world's most exceptional
-                        designers under one philosophy.
+                        El destino definitivo para una vida curada. Reuniendo a los diseñadores más excepcionales del
+                        mundo bajo una misma filosofía.
                     </p>
                 </div>
                 <div>
-                    <h4 class="font-bold mb-6">Curation</h4>
+                    <h4 class="font-bold mb-6">Curación</h4>
                     <ul class="space-y-4 text-sm text-slate-500">
                         <li><a class="hover:text-primary transition-colors" href="#">Home Decor</a></li>
                         <li><a class="hover:text-primary transition-colors" href="#">Tech &amp; Audio</a></li>
@@ -287,7 +290,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold mb-6">Company</h4>
+                    <h4 class="font-bold mb-6">Empresa</h4>
                     <ul class="space-y-4 text-sm text-slate-500">
                         <li><a class="hover:text-primary transition-colors" href="#">Our Story</a></li>
                         <li><a class="hover:text-primary transition-colors" href="#">Journal</a></li>
@@ -296,7 +299,7 @@
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-bold mb-6">Connect</h4>
+                    <h4 class="font-bold mb-6">Conectar</h4>
                     <ul class="space-y-4 text-sm text-slate-500">
                         <li><a class="hover:text-primary transition-colors" href="#">Instagram</a></li>
                         <li><a class="hover:text-primary transition-colors" href="#">Pinterest</a></li>
@@ -307,11 +310,11 @@
             </div>
             <div
                 class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-slate-200 dark:border-primary/10 gap-4">
-                <p class="text-slate-500 text-xs">© 2024 Vogue &amp; Virtue Department Store. All Rights Reserved.</p>
+                <p class="text-slate-500 text-xs">© 2024 Vogue &amp; Virtue. Todos los derechos reservados.</p>
                 <div class="flex gap-8 text-xs text-slate-500">
-                    <a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
-                    <a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
-                    <a class="hover:text-primary transition-colors" href="#">Accessibility</a>
+                    <a class="hover:text-primary transition-colors" href="#">Política de Privacidad</a>
+                    <a class="hover:text-primary transition-colors" href="#">Términos de Servicio</a>
+                    <a class="hover:text-primary transition-colors" href="#">Accesibilidad</a>
                 </div>
             </div>
         </div>

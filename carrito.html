@@ -47,17 +47,17 @@
                 </a>
             </div>
             <div class="flex items-center gap-4">
-                <a href="coleccion.html" class="text-sm font-medium hover:text-primary transition-colors">Continue
-                    Shopping</a>
+                <a href="coleccion.html" class="text-sm font-medium hover:text-primary transition-colors">Seguir
+                    Comprando</a>
             </div>
         </header>
 
         <main class="flex-1 max-w-4xl mx-auto w-full p-6 py-12">
-            <h1 class="text-4xl font-extrabold mb-8">Your Bag</h1>
+            <h1 class="text-4xl font-extrabold mb-8">Tu Bolsa</h1>
 
             <div id="cart-items" class="space-y-6">
                 <!-- Cart items will be rendered here via JS -->
-                <p class="text-slate-500 text-center py-12">Your bag is empty.</p>
+                <p class="text-slate-500 text-center py-12">Tu bolsa está vacía.</p>
             </div>
 
             <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col items-end gap-6">
@@ -67,7 +67,7 @@
                 </div>
                 <button
                     class="w-full max-w-xs bg-primary text-slate-900 py-4 rounded-xl font-bold hover:brightness-110 transition-all">
-                    Checkout Now
+                    Finalizar Compra
                 </button>
             </div>
         </main>
@@ -87,7 +87,18 @@
                     cartItemsContainer.innerHTML = '';
                     let total = 0;
                     cart.forEach(item => {
-                        const price = parseFloat(item.price.replace('$', '').replace(',', ''));
+                        // Use numericPrice if available, otherwise parse string
+                        let price = item.numericPrice;
+                        if (!price) {
+                            // Robust parsing: remove currency and all separators if no decimal is detected
+                            // or assume dots are thousand separators if followed by 3 digits (common in user's case)
+                            let cleanPrice = item.price.replace('$', '').trim();
+                            if (cleanPrice.includes('.') && cleanPrice.split('.').pop().length === 3) {
+                                cleanPrice = cleanPrice.replace(/\./g, '');
+                            }
+                            price = parseFloat(cleanPrice.replace(/,/g, ''));
+                        }
+
                         total += price * item.quantity;
 
                         const itemElement = document.createElement('div');
@@ -119,7 +130,7 @@
                     });
                     totalElement.textContent = `$${total.toLocaleString()}`;
                 } else {
-                    cartItemsContainer.innerHTML = '<p class="text-slate-500 text-center py-12">Your bag is empty.</p>';
+                    cartItemsContainer.innerHTML = '<p class="text-slate-500 text-center py-12">Tu bolsa está vacía.</p>';
                     totalElement.textContent = '$0.00';
                 }
             }
