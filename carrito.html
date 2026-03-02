@@ -80,36 +80,48 @@
         document.addEventListener('DOMContentLoaded', () => {
             const cartItemsContainer = document.getElementById('cart-items');
             const totalElement = document.getElementById('cart-total');
-            const cart = getCart();
 
-            if (cart.length > 0) {
-                cartItemsContainer.innerHTML = '';
-                let total = 0;
-                cart.forEach(item => {
-                    const price = parseFloat(item.price.replace('$', '').replace(',', ''));
-                    total += price * item.quantity;
+            function renderCart() {
+                const cart = getCart();
+                if (cart.length > 0) {
+                    cartItemsContainer.innerHTML = '';
+                    let total = 0;
+                    cart.forEach(item => {
+                        const price = parseFloat(item.price.replace('$', '').replace(',', ''));
+                        total += price * item.quantity;
 
-                    const itemElement = document.createElement('div');
-                    itemElement.className = 'flex items-center gap-6 p-4 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800';
-                    itemElement.innerHTML = `
-                        <div class="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden flex-shrink-0">
-                            <img src="${item.image}" class="w-full h-full object-contain">
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-lg">${item.name}</h3>
-                            <p class="text-slate-500 font-bold">${item.price}</p>
-                            <div class="flex items-center gap-4 mt-2">
-                                <span class="text-sm text-slate-400">Qty: ${item.quantity}</span>
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'flex items-center gap-6 p-4 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800';
+                        itemElement.innerHTML = `
+                            <div class="w-24 h-24 bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="${item.image}" class="w-full h-full object-contain">
                             </div>
-                        </div>
-                        <button class="text-slate-400 hover:text-red-500 transition-colors">
-                            <span class="material-symbols-outlined">delete</span>
-                        </button>
-                    `;
-                    cartItemsContainer.appendChild(itemElement);
-                });
-                totalElement.textContent = `$${total.toLocaleString()}`;
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg">${item.name}</h3>
+                                <p class="text-slate-500 font-bold">${item.price}</p>
+                                <div class="flex items-center gap-4 mt-2">
+                                    <span class="text-sm text-slate-400">Qty: ${item.quantity}</span>
+                                </div>
+                            </div>
+                            <button onclick="handleRemove('${item.id}')" class="text-slate-400 hover:text-red-500 transition-colors">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        `;
+                        cartItemsContainer.appendChild(itemElement);
+                    });
+                    totalElement.textContent = `$${total.toLocaleString()}`;
+                } else {
+                    cartItemsContainer.innerHTML = '<p class="text-slate-500 text-center py-12">Your bag is empty.</p>';
+                    totalElement.textContent = '$0.00';
+                }
             }
+
+            window.handleRemove = (id) => {
+                removeFromCart(id);
+                renderCart();
+            };
+
+            renderCart();
         });
     </script>
 </body>

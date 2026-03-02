@@ -24,6 +24,19 @@ function getCart() {
     return cart;
 }
 
+// Remove item from cart (decreases quantity by 1)
+function removeFromCart(productId) {
+    const existingItem = cart.find(item => item.id === productId);
+    if (existingItem) {
+        if (existingItem.quantity > 1) {
+            existingItem.quantity -= 1;
+        } else {
+            cart = cart.filter(item => item.id !== productId);
+        }
+        saveCart();
+    }
+}
+
 // Update cart count in UI
 function updateCartCount() {
     const counts = document.querySelectorAll('.shopping-bag-count'); // Need to ensure this class exists in HTML
