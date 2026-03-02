@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const productGrid = document.getElementById('product-grid');
     let allProducts = [];
 
+    let currentCategory = 'all';
+    let currentPrice = 5000;
+
     if (productGrid) {
         console.log('Product grid found, starting fetch...');
         try {
@@ -36,13 +39,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const categoryParam = urlParams.get('category');
 
                 if (categoryParam) {
-                    const filtered = allProducts.filter(p => String(p.id_tipo_producto) === String(categoryParam));
-                    renderProducts(filtered);
-                    setupCategoryFilters(categoryParam);
-                } else {
-                    renderProducts(allProducts);
-                    setupCategoryFilters('all');
+                    currentCategory = categoryParam;
                 }
+
+                setupFilters();
+                applyFilters();
             } else {
                 renderEmptyState();
             }
@@ -51,40 +52,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    function setupCategoryFilters(activeCategory = 'all') {
-        const filters = document.querySelectorAll('.category-btn');
-
-        // Internal helper to set active class
-        const setActiveUI = (category) => {
-            filters.forEach(f => {
-                if (f.dataset.category === String(category)) {
-                    f.classList.add('bg-primary/10', 'text-primary', 'font-semibold');
-                    f.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-                } else {
-                    f.classList.remove('bg-primary/10', 'text-primary', 'font-semibold');
-                    f.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-                }
-            });
-        };
-
-        setActiveUI(activeCategory);
-
-        filters.forEach(btn => {
+    function setupFilters() {
+        // Category filters
+        const categoryBtn = document.querySelectorAll('.category-btn');
+        categoryBtn.forEach(btn => {
             btn.onclick = (e) => {
                 e.preventDefault();
-                const category = btn.dataset.category;
-
-                setActiveUI(category);
-
-                // Filter products
-                if (category === 'all') {
-                    renderProducts(allProducts);
-                } else {
-                    const filtered = allProducts.filter(p => String(p.id_tipo_producto) === String(category));
-                    renderProducts(filtered);
-                }
+                currentCategory = btn.dataset.category;
+                updateCategoryUI();
+                applyFilters();
             };
         });
+
+        // Price filter
+        const priceRange = document.getElementById('price-range');
+        const priceValue = document.getElementById('price-value');
+        if (priceRange) {
+            priceRange.oninput = (e) => {
+                currentPrice = parseInt(e.target.value);
+                priceValue.textContent = `$${currentPrice.toLocaleString()}`;
+                applyFilters();
+            };
+        }
+
+        updateCategoryUI();
+    }
+
+    function updateCategoryUI() {
+        const filters = document.querySelectorAll('.category-btn');
+        filters.forEach(f => {
+            if (f.dataset.category === String(currentCategory)) {
+                f.classList.add('bg-primary/10', 'text-primary', 'font-semibold');
+                f.classList.remove('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+            } else {
+                f.classList.remove('bg-primary/10', 'text-primary', 'font-semibold');
+                f.classList.add('text-slate-600', 'dark:text-slate-400', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
+            }
+        });
+    }
+
+    function applyFilters() {
+        let filtered = allProducts;
+
+        // Filter by category
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(p => String(p.id_tipo_producto) === String(currentCategory));
+        }
+
+        // Filter by price
+        filtered = filtered.filter(p => parseFloat(p.price || p.precio) <= currentPrice);
+
+        renderProducts(filtered);
     }
 
     function renderEmptyState() {
