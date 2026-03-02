@@ -24,17 +24,28 @@ function getCart() {
     return cart;
 }
 
-// Remove item from cart (decreases quantity by 1)
-function removeFromCart(productId) {
+// Increase or decrease quantity
+function updateQuantity(productId, delta) {
     const existingItem = cart.find(item => item.id === productId);
     if (existingItem) {
-        if (existingItem.quantity > 1) {
-            existingItem.quantity -= 1;
+        existingItem.quantity += delta;
+        if (existingItem.quantity < 1) {
+            deleteItemFromCart(productId);
         } else {
-            cart = cart.filter(item => item.id !== productId);
+            saveCart();
         }
-        saveCart();
     }
+}
+
+// Remove item from cart completely
+function deleteItemFromCart(productId) {
+    cart = cart.filter(item => item.id !== productId);
+    saveCart();
+}
+
+// Remove item from cart (legacy function for backward compatibility)
+function removeFromCart(productId) {
+    updateQuantity(productId, -1);
 }
 
 // Update cart count in UI

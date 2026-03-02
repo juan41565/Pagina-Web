@@ -100,10 +100,18 @@
                                 <h3 class="font-bold text-lg">${item.name}</h3>
                                 <p class="text-slate-500 font-bold">${item.price}</p>
                                 <div class="flex items-center gap-4 mt-2">
-                                    <span class="text-sm text-slate-400">Qty: ${item.quantity}</span>
+                                    <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+                                        <button onclick="changeQty('${item.id}', -1)" class="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors">
+                                            <span class="material-symbols-outlined text-sm">remove</span>
+                                        </button>
+                                        <span class="text-sm font-bold w-6 text-center">${item.quantity}</span>
+                                        <button onclick="changeQty('${item.id}', 1)" class="w-8 h-8 flex items-center justify-center hover:bg-white dark:hover:bg-slate-700 rounded-md transition-colors hover:text-primary">
+                                            <span class="material-symbols-outlined text-sm">add</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <button onclick="handleRemove('${item.id}')" class="text-slate-400 hover:text-red-500 transition-colors">
+                            <button onclick="handleDelete('${item.id}')" class="text-slate-400 hover:text-red-500 transition-colors">
                                 <span class="material-symbols-outlined">delete</span>
                             </button>
                         `;
@@ -115,6 +123,16 @@
                     totalElement.textContent = '$0.00';
                 }
             }
+
+            window.changeQty = (id, delta) => {
+                updateQuantity(id, delta);
+                renderCart();
+            };
+
+            window.handleDelete = (id) => {
+                deleteItemFromCart(id);
+                renderCart();
+            };
 
             window.handleRemove = (id) => {
                 removeFromCart(id);
