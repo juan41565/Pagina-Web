@@ -1,174 +1,109 @@
 const SUPABASE_URL = 'https://lkrcnfemvnjgzbxbbywr.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxrcmNuZmVtdm5qZ3pieGJieXdyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDI1NDIsImV4cCI6MjA4Nzc3ODU0Mn0.NYOXGswZuBQG5gQT5YbbXCZ8l1uSc8O00rnN3XCBzG8';
 
-let supabaseClient = null;
+// Helper function to handle fetch requests to Supabase
+async function supabaseFetch(endpoint, options = {}) {
+    const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
 
-function getSupabase() {
-    if (supabaseClient) return supabaseClient;
+    // Default headers required by Supabase Data API
+    const headers = {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation', // To get the inserted/updated data back
+        ...options.headers
+    };
 
-    // Check window.supabase and supabase global
-    const lib = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+    try {
+        const response = await fetch(url, { ...options, headers });
 
-    if (lib && lib.createClient) {
-        supabaseClient = lib.createClient(SUPABASE_URL, SUPABASE_KEY);
-        console.log('Supabase client initialized');
-    } else {
-        console.error('Supabase library not found');
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        // DELETE often returns 204 No Content
+        if (response.status === 204) return { data: null, error: null };
+
+        const data = await response.json();
+        return { data, error: null };
+    } catch (err) {
+        console.error(`Supabase Fetch Error (${endpoint}):`, err);
+        return { data: null, error: err.message };
     }
-    return supabaseClient;
 }
 
 async function fetchProducts() {
-    const client = getSupabase();
-    if (!client) {
-        console.error('Fetch failed: Supabase client is null');
-        return [];
+    // PostgREST join syntax: select=*,tipo_producto(nombre)
+    const { data, error } = await supabaseFetch('producto?select=*,tipo_producto(nombre)');
+
+    if (error) {
+        // Fallback if join fails
+        const fallback = await supabaseFetch('producto?select=*');
+        return fallback.data || [];
     }
-
-    console.log('Fetching products from table "producto"...');
-    try {
-        const { data, error } = await client
-            .from('producto')
-            .select(`
-                *,
-                tipo_producto (
-                    nombre
-                )
-            `);
-
-        if (error) {
-            console.error('Supabase fetch error:', error);
-            // Try fallback without join
-            console.log('Attempting fallback fetch without join...');
-            const fallback = await client.from('producto').select('*');
-            if (fallback.error) {
-                console.error('Fallback fetch also failed:', fallback.error);
-                return [];
-            }
-            return fallback.data;
-        }
-
-        console.log('Successfully fetched products:', data);
-        return data;
-    } catch (err) {
-        console.error('Unexpected fetch error:', err);
-        return [];
-    }
+    return data || [];
 }
 
 async function signUp(clienteData) {
-    const client = getSupabase();
-    if (!client) return { error: 'Supabase client not initialized' };
+    const { data, error } = await supabaseFetch('cliente', {
+        method: 'POST',
+        body: JSON.stringify(clienteData)
+    });
 
-    try {
-        const { data, error } = await client
-            .from('cliente')
-            .insert([clienteData])
-            .select();
-
-        if (error) throw error;
-        return { data: data[0], error: null };
-    } catch (err) {
-        console.error('Sign up error:', err);
-        return { data: null, error: err.message };
-    }
+    return {
+        data: data ? data[0] : null,
+        error
+    };
 }
 
 async function logIn(email, password) {
-    const client = getSupabase();
-    if (!client) return { error: 'Supabase client not initialized' };
+    // Use filters in URL: email=eq.val&contraseña=eq.val
+    const endpoint = `cliente?select=*&email=eq.${encodeURIComponent(email)}&contraseña=eq.${encodeURIComponent(password)}`;
+    const { data, error } = await supabaseFetch(endpoint);
 
-    try {
-        const { data, error } = await client
-            .from('cliente')
-            .select('*')
-            .eq('email', email)
-            .eq('contraseña', password) // The user said they added "contraseña"
-            .single();
+    if (error) return { data: null, error: 'Error de conexión' };
 
-        if (error) throw error;
-        return { data, error: null };
-    } catch (err) {
-        console.error('Log in error:', err);
-        return { data: null, error: 'Credenciales inválidas o error de conexión' };
+    if (!data || data.length === 0) {
+        return { data: null, error: 'Credenciales inválidas' };
     }
+
+    return { data: data[0], error: null };
 }
 
 async function deleteAccount(clienteId) {
-    const client = getSupabase();
-    if (!client) return { error: 'Supabase client not initialized' };
+    const { error } = await supabaseFetch(`cliente?id_cliente=eq.${clienteId}`, {
+        method: 'DELETE'
+    });
 
-    try {
-        const { error } = await client
-            .from('cliente')
-            .delete()
-            .eq('id_cliente', clienteId);
-
-        if (error) throw error;
-        return { error: null };
-    } catch (err) {
-        console.error('Delete account error:', err);
-        return { error: err.message };
-    }
+    return { error };
 }
 
 async function createVenta(ventaData) {
-    const client = getSupabase();
-    if (!client) return { error: 'Supabase client not initialized' };
+    const { data, error } = await supabaseFetch('venta', {
+        method: 'POST',
+        body: JSON.stringify(ventaData)
+    });
 
-    try {
-        const { data, error } = await client
-            .from('venta')
-            .insert([ventaData])
-            .select();
-
-        if (error) throw error;
-        return { data: data[0], error: null };
-    } catch (err) {
-        console.error('Create venta error:', err);
-        return { data: null, error: err.message };
-    }
+    return {
+        data: data ? data[0] : null,
+        error
+    };
 }
 
 async function createDetalleVenta(detalles) {
-    const client = getSupabase();
-    if (!client) return { error: 'Supabase client not initialized' };
+    const { data, error } = await supabaseFetch('detalle_venta', {
+        method: 'POST',
+        body: JSON.stringify(detalles)
+    });
 
-    try {
-        const { data, error } = await client
-            .from('detalle_venta')
-            .insert(detalles)
-            .select();
-
-        if (error) throw error;
-        return { data, error: null };
-    } catch (err) {
-        console.error('Create detalle_venta error:', err);
-        return { data: null, error: err.message };
-    }
+    return { data, error };
 }
 
 async function getHistorialVentas(clienteId) {
-    const client = getSupabase();
-    if (!client) return { error: 'Supabase client not initialized' };
+    // Nested select for joins: select=*,detalle_venta(*,producto(*))
+    const endpoint = `venta?select=*,detalle_venta(*,producto(*))&id_cliente=eq.${clienteId}&order=fecha.desc`;
+    const { data, error } = await supabaseFetch(endpoint);
 
-    try {
-        const { data, error } = await client
-            .from('venta')
-            .select(`
-                *,
-                detalle_venta (
-                    *,
-                    producto (*)
-                )
-            `)
-            .eq('id_cliente', clienteId)
-            .order('fecha', { ascending: false });
-
-        if (error) throw error;
-        return { data, error: null };
-    } catch (err) {
-        console.error('Fetch orders error:', err);
-        return { data: null, error: err.message };
-    }
+    return { data, error };
 }
