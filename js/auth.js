@@ -58,12 +58,14 @@ function switchAuthMode(mode) {
     const loginForm = document.getElementById('login-form');
     const signupForm = document.getElementById('signup-form');
     const profileView = document.getElementById('profile-view');
+    const historyView = document.getElementById('history-view');
     const title = document.getElementById('auth-modal-title');
 
     // Hide all
     loginForm.classList.add('hidden');
     signupForm.classList.add('hidden');
     profileView.classList.add('hidden');
+    if (historyView) historyView.classList.add('hidden');
 
     if (mode === 'login') {
         loginForm.classList.remove('hidden');
@@ -75,7 +77,65 @@ function switchAuthMode(mode) {
         profileView.classList.remove('hidden');
         title.textContent = 'Mi Perfil';
         loadProfileData();
+    } else if (mode === 'history') {
+        if (historyView) historyView.classList.remove('hidden');
+        title.textContent = 'Mis Pedidos';
+        loadOrderHistory();
     }
+}
+
+async function loadOrderHistory() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const container = document.getElementById('history-list');
+    if (!user || !container) return;
+
+    container.innerHTML = '<div class="text-center py-10 opacity-50">Cargando historial...</div>';
+
+    const { data, error } = await getHistorialVentas(user.id_cliente);
+
+    if (error) {
+        container.innerHTML = `<div class="text-red-500 text-center py-10">Error: ${error}</div>`;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        container.innerHTML = '<div class="text-center py-10 opacity-50 uppercase tracking-widest text-[10px] font-bold">No has realizado pedidos aún</div>';
+        return;
+    }
+
+    container.innerHTML = '';
+    data.forEach(venta => {
+        const date = new Date(venta.fecha).toLocaleDateString();
+        const card = document.createElement('div');
+        card.className = 'p-5 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl space-y-3';
+
+        let itemsHtml = venta.detalle_venta.map(d =>
+            `<div class="flex justify-between text-xs">
+                <span class="opacity-70">${d.producto.nombre} x${d.cantidad}</span>
+                <span class="font-bold">$${d.subtotal.toLocaleString()}</span>
+            </div>`
+        ).join('');
+
+        card.innerHTML = `
+            <div class="flex justify-between items-start border-b border-slate-200/50 dark:border-slate-700 pb-3">
+                <div>
+                    <span class="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Pedido #${venta.id_venta}</span>
+                    <p class="text-xs text-slate-400">${date}</p>
+                </div>
+                <div class="text-right">
+                    <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter ${venta.estado === 'PAGADO' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}">${venta.estado}</span>
+                </div>
+            </div>
+            <div class="space-y-2 py-2">
+                ${itemsHtml}
+            </div>
+            <div class="flex justify-between items-center pt-3 border-t border-slate-200/50 dark:border-slate-700">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${venta.metodo_pago}</span>
+                <span class="text-lg font-black text-slate-900 dark:text-white">$${venta.total.toLocaleString()}</span>
+            </div>
+        `;
+        container.appendChild(card);
+    });
 }
 
 function loadProfileData() {

@@ -147,3 +147,28 @@ async function createDetalleVenta(detalles) {
         return { data: null, error: err.message };
     }
 }
+
+async function getHistorialVentas(clienteId) {
+    const client = getSupabase();
+    if (!client) return { error: 'Supabase client not initialized' };
+
+    try {
+        const { data, error } = await client
+            .from('venta')
+            .select(`
+                *,
+                detalle_venta (
+                    *,
+                    producto (*)
+                )
+            `)
+            .eq('id_cliente', clienteId)
+            .order('fecha', { ascending: false });
+
+        if (error) throw error;
+        return { data, error: null };
+    } catch (err) {
+        console.error('Fetch orders error:', err);
+        return { data: null, error: err.message };
+    }
+}
