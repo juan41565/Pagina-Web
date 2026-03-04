@@ -66,10 +66,39 @@
                     <span
                         class="shopping-bag-count absolute -top-1 -right-1 bg-primary text-slate-900 text-[10px] font-bold h-4 min-w-[1rem] flex items-center justify-center rounded-full px-1 hidden">0</span>
                 </a>
-                <button
-                    class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary/20 transition-colors">
-                    <span class="material-symbols-outlined text-xl">person</span>
-                </button>
+                <div class="relative group/auth">
+                    <button id="auth-trigger"
+                        class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-primary/20 transition-colors">
+                        <span class="material-symbols-outlined text-xl">person</span>
+                    </button>
+                    <!-- Auth Dropdown -->
+                    <div id="auth-dropdown"
+                        class="absolute right-0 mt-3 w-56 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-primary/10 rounded-2xl shadow-2xl py-3 hidden z-50 transform origin-top-right transition-all animate-in fade-in zoom-in-95 duration-200">
+                        <div id="auth-guest-options" class="px-2 space-y-1">
+                            <button onclick="openAuthModal('login')"
+                                class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-primary hover:text-background-dark rounded-xl transition-all flex items-center gap-3">
+                                <span class="material-symbols-outlined text-lg">login</span> Iniciar Sesión
+                            </button>
+                            <button onclick="openAuthModal('signup')"
+                                class="w-full text-left px-4 py-2.5 text-sm font-medium border border-slate-200 dark:border-slate-800 hover:border-primary rounded-xl transition-all flex items-center gap-3">
+                                <span class="material-symbols-outlined text-lg">person_add</span> Crear Cuenta
+                            </button>
+                        </div>
+                        <div id="auth-user-options" class="hidden px-2 space-y-1">
+                            <div
+                                class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 opacity-50">
+                                Mi Cuenta</div>
+                            <button onclick="openAuthModal('profile')"
+                                class="w-full text-left px-4 py-2.5 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all flex items-center gap-3">
+                                <span class="material-symbols-outlined text-lg">account_circle</span> Ver Perfil
+                            </button>
+                            <button onclick="signOut()"
+                                class="w-full text-left px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-500/10 rounded-xl transition-all flex items-center gap-3">
+                                <span class="material-symbols-outlined text-lg">logout</span> Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
         <main class="flex-1 flex flex-col md:flex-row max-w-[1440px] mx-auto w-full">
@@ -214,10 +243,173 @@
             </div>
         </footer>
     </div>
+    <!-- Auth Modal -->
+    <div id="auth-modal"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background-dark/80 backdrop-blur-md hidden transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-950 w-full max-w-lg rounded-[2.5rem] shadow-[0_0_100px_rgba(249,228,6,0.1)] overflow-hidden border border-slate-200 dark:border-primary/20 transition-all transform scale-95 opacity-0 duration-300 relative"
+            id="auth-modal-content">
+            <!-- Decorative elements -->
+            <div
+                class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none">
+            </div>
+
+            <div class="p-10 relative">
+                <div class="flex justify-between items-center mb-10">
+                    <div class="flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary text-3xl">diamond</span>
+                        <h2 id="auth-modal-title" class="text-3xl font-light tracking-tight uppercase">Iniciar Sesión
+                        </h2>
+                    </div>
+                    <button onclick="closeAuthModal()"
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-900 text-slate-400 hover:text-primary transition-all">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" class="space-y-5">
+                    <div class="group/field">
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Correo
+                            Electrónico</label>
+                        <input type="email" required name="email"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-6 py-4 focus:border-primary outline-none transition-all dark:text-white"
+                            placeholder="tu@email.com">
+                    </div>
+                    <div class="group/field">
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Contraseña</label>
+                        <input type="password" required name="password"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-6 py-4 focus:border-primary outline-none transition-all dark:text-white"
+                            placeholder="••••••••">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-primary text-background-dark font-black text-sm uppercase tracking-[0.2em] py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-[0_10px_30px_rgba(249,228,6,0.3)] mt-4">Entrar
+                        al Universo</button>
+                    <p class="text-center text-sm text-slate-500 mt-8">
+                        ¿No tienes cuenta? <button type="button" onclick="switchAuthMode('signup')"
+                            class="text-primary font-bold hover:underline decoration-2 underline-offset-4">Únete a la
+                            Vanguardia</button>
+                    </p>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="signup-form" class="space-y-4 hidden">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="group/field">
+                            <label
+                                class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Nombres</label>
+                            <input type="text" required name="nombres"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 focus:border-primary outline-none transition-all dark:text-white">
+                        </div>
+                        <div class="group/field">
+                            <label
+                                class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Apellidos</label>
+                            <input type="text" required name="apellidos"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 focus:border-primary outline-none transition-all dark:text-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="group/field">
+                            <label
+                                class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Documento</label>
+                            <input type="text" required name="documento"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 focus:border-primary outline-none transition-all dark:text-white"
+                                placeholder="ID / DNI">
+                        </div>
+                        <div class="group/field">
+                            <label
+                                class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Teléfono</label>
+                            <input type="tel" required name="telefono"
+                                class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 focus:border-primary outline-none transition-all dark:text-white">
+                        </div>
+                    </div>
+                    <div class="group/field">
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Correo
+                            Electrónico</label>
+                        <input type="email" required name="email"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 focus:border-primary outline-none transition-all dark:text-white">
+                    </div>
+                    <div class="group/field">
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Dirección
+                            de Entrega</label>
+                        <input type="text" required name="direccion"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 focus:border-primary outline-none transition-all dark:text-white">
+                    </div>
+                    <div class="group/field">
+                        <label
+                            class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 px-1 group-focus-within/field:text-primary transition-colors">Contraseña
+                            Segura</label>
+                        <input type="password" required name="password"
+                            class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 focus:border-primary outline-none transition-all dark:text-white">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-primary text-background-dark font-black text-sm uppercase tracking-[0.2em] py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all shadow-[0_10px_30px_rgba(249,228,6,0.3)] mt-4">Crear
+                        Perfil Premium</button>
+                    <p class="text-center text-sm text-slate-500 mt-8">
+                        ¿Ya eres miembro? <button type="button" onclick="switchAuthMode('login')"
+                            class="text-primary font-bold hover:underline decoration-2 underline-offset-4">Iniciar
+                            sesión</button>
+                    </p>
+                </form>
+
+                <!-- Profile View -->
+                <div id="profile-view" class="space-y-6 hidden">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-1">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombres</label>
+                            <p id="profile-nombres" class="text-lg font-medium"></p>
+                        </div>
+                        <div class="space-y-1">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Apellidos</label>
+                            <p id="profile-apellidos" class="text-lg font-medium"></p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-1">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Documento</label>
+                            <p id="profile-documento" class="text-lg font-medium"></p>
+                        </div>
+                        <div class="space-y-1">
+                            <label
+                                class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Teléfono</label>
+                            <p id="profile-telefono" class="text-lg font-medium"></p>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Correo
+                            Electrónico</label>
+                        <p id="profile-email" class="text-lg font-medium"></p>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Dirección</label>
+                        <p id="profile-direccion" class="text-lg font-medium"></p>
+                    </div>
+                    <div class="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-3">
+                        <button onclick="signOut()"
+                            class="w-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-300 font-bold py-4 rounded-2xl hover:bg-slate-200 dark:hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">logout</span> Cerrar Sesión
+                        </button>
+                        <button onclick="handleDeleteAccount()"
+                            class="w-full text-red-500 font-bold py-4 rounded-2xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined">delete_forever</span> Eliminar mi Cuenta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/api.js"></script>
     <script src="js/carrito.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 
 </html>

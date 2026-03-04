@@ -55,3 +55,59 @@ async function fetchProducts() {
         return [];
     }
 }
+
+async function signUp(clienteData) {
+    const client = getSupabase();
+    if (!client) return { error: 'Supabase client not initialized' };
+
+    try {
+        const { data, error } = await client
+            .from('cliente')
+            .insert([clienteData])
+            .select();
+
+        if (error) throw error;
+        return { data: data[0], error: null };
+    } catch (err) {
+        console.error('Sign up error:', err);
+        return { data: null, error: err.message };
+    }
+}
+
+async function logIn(email, password) {
+    const client = getSupabase();
+    if (!client) return { error: 'Supabase client not initialized' };
+
+    try {
+        const { data, error } = await client
+            .from('cliente')
+            .select('*')
+            .eq('email', email)
+            .eq('contraseña', password) // The user said they added "contraseña"
+            .single();
+
+        if (error) throw error;
+        return { data, error: null };
+    } catch (err) {
+        console.error('Log in error:', err);
+        return { data: null, error: 'Credenciales inválidas o error de conexión' };
+    }
+}
+
+async function deleteAccount(clienteId) {
+    const client = getSupabase();
+    if (!client) return { error: 'Supabase client not initialized' };
+
+    try {
+        const { error } = await client
+            .from('cliente')
+            .delete()
+            .eq('id_cliente', clienteId);
+
+        if (error) throw error;
+        return { error: null };
+    } catch (err) {
+        console.error('Delete account error:', err);
+        return { error: err.message };
+    }
+}
