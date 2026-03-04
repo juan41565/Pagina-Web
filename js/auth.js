@@ -158,7 +158,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 telefono: formData.get('telefono'),
                 direccion: formData.get('direccion'),
                 documento: formData.get('documento'),
-                contraseña: formData.get('password')
+                contraseña: formData.get('password'),
+                estado: true,
+                fecha_registro: new Date().toISOString()
             };
 
             const { data, error } = await signUp(userData);

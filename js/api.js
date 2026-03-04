@@ -111,3 +111,39 @@ async function deleteAccount(clienteId) {
         return { error: err.message };
     }
 }
+
+async function createVenta(ventaData) {
+    const client = getSupabase();
+    if (!client) return { error: 'Supabase client not initialized' };
+
+    try {
+        const { data, error } = await client
+            .from('venta')
+            .insert([ventaData])
+            .select();
+
+        if (error) throw error;
+        return { data: data[0], error: null };
+    } catch (err) {
+        console.error('Create venta error:', err);
+        return { data: null, error: err.message };
+    }
+}
+
+async function createDetalleVenta(detalles) {
+    const client = getSupabase();
+    if (!client) return { error: 'Supabase client not initialized' };
+
+    try {
+        const { data, error } = await client
+            .from('detalle_venta')
+            .insert(detalles)
+            .select();
+
+        if (error) throw error;
+        return { data, error: null };
+    } catch (err) {
+        console.error('Create detalle_venta error:', err);
+        return { data: null, error: err.message };
+    }
+}

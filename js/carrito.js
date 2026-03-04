@@ -107,4 +107,126 @@ function updateCartCount() {
 }
 
 // Initialize cart on page load
-document.addEventListener('DOMContentLoaded', updateCartCount);
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.onclick = () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (!user) {
+                if (typeof showNotification === 'function') {
+                    showNotification('Debes iniciar sesión para finalizar la compra', 'error');
+                } else {
+                    alert('Debes iniciar sesión para finalizar la compra');
+                }
+                return;
+            }
+            if (cart.length === 0) {
+                if (typeof showNotification === 'function') {
+                    showNotification('Tu bolsa está vacía', 'error');
+                }
+                return;
+            }
+            openCheckoutModal();
+        };
+    }
+});
+
+function openCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    const content = document.getElementById('checkout-modal-content');
+    if (!modal || !content) return;
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function closeCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    const content = document.getElementById('checkout-modal-content');
+    if (!modal || !content) return;
+
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+async function processCheckout(metodoPago) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) return;
+
+    const total = cart.reduce((sum, item) => {
+        let price = item.numericPrice;
+        if (!price) {
+            let cleanPrice = item.price.replace('$', '').trim();
+            if (cleanPrice.includes('.') && cleanPrice.split('.').pop().length === 3) {
+                cleanPrice = cleanPrice.replace(/\./g, '');
+            }
+            price = parseFloat(cleanPrice.replace(/,/g, ''));
+        }
+        return sum + (price * item.quantity);
+    }, 0);
+
+    const ventaData = {
+        id_cliente: user.id_cliente,
+        total: total,
+        metodo_pago: metodoPago,
+        estado: (metodoPago === 'TARJETA' || metodoPago === 'TRANSFERENCIA') ? 'PAGADO' : 'PENDIENTE',
+        fecha: new Date().toISOString()
+    };
+
+    closeCheckoutModal();
+    if (typeof showNotification === 'function') {
+        showNotification('Procesando tu pedido...', 'success');
+    }
+
+    const { data: venta, error: ventaError } = await createVenta(ventaData);
+
+    if (ventaError) {
+        if (typeof showNotification === 'function') {
+            showNotification('Error al crear la venta: ' + ventaError, 'error');
+        }
+        return;
+    }
+
+    const detalles = cart.map(item => {
+        let price = item.numericPrice;
+        if (!price) {
+            let cleanPrice = item.price.replace('$', '').trim();
+            if (cleanPrice.includes('.') && cleanPrice.split('.').pop().length === 3) {
+                cleanPrice = cleanPrice.replace(/\./g, '');
+            }
+            price = parseFloat(cleanPrice.replace(/,/g, ''));
+        }
+        return {
+            id_venta: venta.id_venta,
+            id_producto: item.id_producto || item.id, // Support both naming variants if applicable
+            cantidad: item.quantity,
+            precio_unitario: price,
+            subtotal: price * item.quantity
+        };
+    });
+
+    const { error: detalleError } = await createDetalleVenta(detalles);
+
+    if (detalleError) {
+        if (typeof showNotification === 'function') {
+            showNotification('Error al guardar detalles: ' + detalleError, 'error');
+        }
+    } else {
+        if (typeof showNotification === 'function') {
+            showNotification('¡Compra realizada con éxito! Gracias por elegir V&V.', 'success');
+        }
+        cart = [];
+        saveCart();
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 3000);
+    }
+}
