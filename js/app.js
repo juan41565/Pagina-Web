@@ -256,6 +256,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (newValue) adminSelect.appendChild(newValue);
         }
 
+        // Update Edit Modal Select
+        const editSelect = document.getElementById('edit-product-category');
+        if (editSelect) {
+            editSelect.innerHTML = categories.map(cat => `
+                <option value="${cat.id_tipo_producto}">${cat.nombre}</option>
+            `).join('');
+        }
+
         // Update Sidebar Filters
         const filterContainer = document.getElementById('category-filters');
         if (filterContainer) {
@@ -449,6 +457,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="w-full h-full bg-center bg-no-repeat bg-cover transform group-hover:scale-110 transition-transform duration-500" 
                         style='background-image: url("${product.imagen_url || 'https://via.placeholder.com/400'}");'>
                     </div>
+                    ${isAdmin() ? `
+                        <div class="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <button data-id="${product.id_producto}" class="edit-product bg-white dark:bg-slate-900 text-slate-900 dark:text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                        </div>
+                    ` : ''}
                 </div>
                 <div class="flex flex-col px-1 pb-2">
                     <div class="flex justify-between items-start">
@@ -562,6 +577,84 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             };
         });
+
+        // Edit functionality
+        const editButtons = document.querySelectorAll('.edit-product');
+        editButtons.forEach(btn => {
+            btn.onclick = (e) => {
+                e.preventDefault();
+                const productId = btn.dataset.id;
+                const product = allProducts.find(p => String(p.id_producto) === String(productId));
+                if (product) {
+                    openEditModal(product);
+                }
+            };
+        });
+    }
+
+    function openEditModal(product) {
+        const modal = document.getElementById('edit-product-modal');
+        if (!modal) return;
+
+        document.getElementById('edit-product-id').value = product.id_producto;
+        document.getElementById('edit-product-name').value = product.nombre;
+        document.getElementById('edit-product-price').value = product.precio;
+        document.getElementById('edit-product-category').value = product.id_tipo_producto;
+        document.getElementById('edit-product-image').value = product.imagen_url;
+        document.getElementById('edit-product-desc').value = product.descripcion;
+
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setupEditModalListeners();
+    }
+
+    function setupEditModalListeners() {
+        const modal = document.getElementById('edit-product-modal');
+        const form = document.getElementById('edit-product-form');
+        const closeBtn = document.getElementById('close-edit-modal');
+        const cancelBtn = document.getElementById('cancel-edit-btn');
+
+        if (!modal || !form || form.dataset.setup) return;
+        form.dataset.setup = "true";
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        closeBtn.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-product-id').value;
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            const updatedData = {
+                nombre: document.getElementById('edit-product-name').value,
+                precio: parseFloat(document.getElementById('edit-product-price').value),
+                id_tipo_producto: parseInt(document.getElementById('edit-product-category').value),
+                imagen_url: document.getElementById('edit-product-image').value,
+                descripcion: document.getElementById('edit-product-desc').value
+            };
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Guardando...';
+
+            const { error } = await updateProduct(id, updatedData);
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Guardar Cambios';
+
+            if (error) {
+                showNotification('Error al actualizar: ' + error, 'error');
+            } else {
+                showNotification('Producto actualizado correctamente');
+                closeModal();
+                allProducts = await fetchProducts();
+                applyFilters();
+            }
+        };
     }
 
     function setupRecycleBin() {

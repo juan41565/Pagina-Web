@@ -187,3 +187,11 @@ async function restoreCategory(categoryId) {
     });
     return { error };
 }
+
+async function updateProduct(productId, productData) {
+    const { error } = await supabaseFetch(`producto?id_producto=eq.${productId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(productData)
+    });
+    return { error };
+}

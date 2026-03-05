@@ -347,6 +347,83 @@
                 </div>
             </div>
         </div>
+        <!-- Edit Product Modal -->
+        <div id="edit-product-modal" class="fixed inset-0 z-[110] hidden">
+            <div class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"></div>
+            <div class="absolute inset-0 flex items-center justify-center p-4">
+                <div
+                    class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800 flex flex-col animate-in zoom-in-95 duration-300">
+                    <!-- Header -->
+                    <div class="p-8 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">edit</span>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold">Editar Producto</h3>
+                                <p class="text-xs text-slate-500">Modifica los detalles del artículo</p>
+                            </div>
+                        </div>
+                        <button id="close-edit-modal"
+                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-red-500 hover:text-white transition-all">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+
+                    <!-- Form -->
+                    <form id="edit-product-form" class="p-8 space-y-6">
+                        <input type="hidden" id="edit-product-id">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombre</label>
+                                <input type="text" id="edit-product-name" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Precio</label>
+                                <input type="number" id="edit-product-price" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Categoría</label>
+                                <select id="edit-product-category" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Imagen
+                                    URL</label>
+                                <input type="url" id="edit-product-image" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2 md:col-span-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Descripción</label>
+                                <textarea id="edit-product-desc" required rows="3"
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all resize-none"></textarea>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-3 pt-4">
+                            <button type="button" id="cancel-edit-btn"
+                                class="px-6 py-2 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">
+                                Cancelar
+                            </button>
+                            <button type="submit"
+                                class="bg-primary text-background-dark px-8 py-2 rounded-xl text-sm font-bold shadow-lg shadow-primary/25 hover:brightness-110 transition-all">
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <footer
             class="bg-slate-100 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 mt-12 py-12 px-6">
             <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
