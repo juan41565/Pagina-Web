@@ -152,67 +152,136 @@
                     </div>
                 </div>
                 <div id="admin-controls"
-                    class="hidden mb-12 bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="material-symbols-outlined text-primary">add_circle</span>
-                        <h2 class="text-xl font-bold uppercase tracking-tight">Añadir Nuevo Producto</h2>
+                    class="hidden mb-12 space-y-8 animate-in fade-in slide-in-from-top-4 duration-700">
+                    <!-- Add Category Section -->
+                    <div
+                        class="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div
+                                class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">category</span>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold">Gestión de Categorías</h2>
+                                <p class="text-xs text-slate-500">Crea nuevas categorías para organizar tus productos
+                                </p>
+                            </div>
+                        </div>
+
+                        <form id="add-category-form" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombre</label>
+                                <input type="text" name="nombre" required placeholder="Ej: Nueva Colección"
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2 md:col-span-2 flex items-end gap-4">
+                                <div class="flex-1 space-y-2">
+                                    <label
+                                        class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Descripción</label>
+                                    <input type="text" name="descripcion" required
+                                        placeholder="Breve descripción de la categoría..."
+                                        class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                                </div>
+                                <button type="submit"
+                                    class="bg-primary hover:bg-primary-dark text-white px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-primary/25 whitespace-nowrap h-[42px]">
+                                    Crear Categoría
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="space-y-2">
-                            <label
-                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombre</label>
-                            <input type="text" name="nombre" required
-                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+
+                    <!-- Add Product Section -->
+                    <div
+                        class="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div
+                                class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined">add_circle</span>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold">Añadir Nuevo Producto</h2>
+                                <p class="text-xs text-slate-500">Publica un nuevo artículo en la tienda web</p>
+                            </div>
                         </div>
-                        <div class="space-y-2">
-                            <label
-                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Precio</label>
-                            <input type="number" name="precio" required
-                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
-                        </div>
-                        <div class="space-y-2">
-                            <label
-                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Categoría</label>
-                            <select name="id_tipo_producto" required
-                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
-                                <option value="1">Electrónica</option>
-                                <option value="2">Ropa</option>
-                                <option value="3">Hogar</option>
-                                <option value="4">Deportes</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label
-                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Código</label>
-                            <input type="text" name="codigo" required
-                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
-                        </div>
-                        <div class="space-y-2">
-                            <label
-                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Stock</label>
-                            <input type="number" name="stock" required
-                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Imagen
-                                URL</label>
-                            <input type="url" name="imagen_url" required
-                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all"
-                                placeholder="https://...">
-                        </div>
-                        <div class="space-y-2 lg:col-span-4">
-                            <label
-                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Descripción</label>
-                            <textarea name="descripcion" required rows="2"
-                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all resize-none"></textarea>
-                        </div>
-                        <div class="lg:col-span-4 flex justify-end">
-                            <button type="submit"
-                                class="bg-primary text-background-dark px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all">
-                                Publicar en la Tienda
-                            </button>
-                        </div>
-                    </form>
+
+                        <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombre</label>
+                                <input type="text" name="nombre" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Precio</label>
+                                <input type="number" name="precio" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Categoría</label>
+                                <select name="id_tipo_producto" id="admin-category-select" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                                    <option value="" disabled selected>Seleccionar...</option>
+                                    <option value="1">Electrónica</option>
+                                    <option value="2">Ropa</option>
+                                    <option value="3">Hogar</option>
+                                    <option value="4">Deportes</option>
+                                    <option value="new" class="font-bold text-primary italic">+ Nueva Categoría</option>
+                                </select>
+                            </div>
+                            <div id="new-category-fields"
+                                class="hidden lg:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-primary/5 rounded-2xl border border-primary/20">
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-[10px] font-bold text-primary uppercase tracking-widest">Nombre
+                                        de la Nueva Categoría</label>
+                                    <input type="text" id="new-category-name"
+                                        class="w-full bg-white dark:bg-slate-900 border border-primary/20 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                                </div>
+                                <div class="space-y-2">
+                                    <label
+                                        class="block text-[10px] font-bold text-primary uppercase tracking-widest">Descripción
+                                        de Categoría</label>
+                                    <input type="text" id="new-category-desc"
+                                        class="w-full bg-white dark:bg-slate-900 border border-primary/20 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Código</label>
+                                <input type="text" name="codigo" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Stock</label>
+                                <input type="number" name="stock" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Imagen
+                                    URL</label>
+                                <input type="url" name="imagen_url" required
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all"
+                                    placeholder="https://...">
+                            </div>
+                            <div class="space-y-2 lg:col-span-4">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Descripción</label>
+                                <textarea name="descripcion" required rows="2"
+                                    class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all resize-none"></textarea>
+                            </div>
+                            <div class="lg:col-span-4 flex justify-end">
+                                <button type="submit"
+                                    class="bg-primary text-background-dark px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all">
+                                    Publicar en la Tienda
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <!-- Products will be loaded here -->

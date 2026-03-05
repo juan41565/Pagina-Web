@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     if (searchInput) searchInput.value = searchParam;
                 }
 
+                await loadDynamicCategories();
                 setupFilters();
                 applyFilters();
             } else {
@@ -225,9 +226,138 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (isAdmin()) {
             controls.classList.remove('hidden');
             setupAdminForm();
+            setupCategoryForm();
+            setupCategoryToggle();
         } else {
             controls.classList.add('hidden');
         }
+    }
+
+    async function loadDynamicCategories() {
+        const categories = await fetchCategories();
+
+        // Update Admin Select
+        const adminSelect = document.getElementById('admin-category-select');
+        if (adminSelect) {
+            const defaultValue = adminSelect.querySelector('option[value=""]');
+            const newValue = adminSelect.querySelector('option[value="new"]');
+            adminSelect.innerHTML = '';
+            if (defaultValue) adminSelect.appendChild(defaultValue);
+            categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id_tipo_producto;
+                opt.textContent = cat.nombre;
+                adminSelect.appendChild(opt);
+            });
+            if (newValue) adminSelect.appendChild(newValue);
+        }
+
+        // Update Sidebar Filters
+        const filterContainer = document.getElementById('category-filters');
+        if (filterContainer) {
+            filterContainer.innerHTML = `
+                <a class="category-btn flex items-center gap-3 px-3 py-2 rounded-lg ${currentCategory === 'all' ? 'bg-primary/10 text-primary font-semibold' : 'text-slate-600 dark:text-slate-400'} text-sm"
+                    href="#" data-category="all">
+                    <span class="material-symbols-outlined text-lg">grid_view</span> Todos los productos
+                </a>
+            ` + categories.map(cat => `
+                <div class="group/cat flex items-center justify-between px-3 py-2 rounded-lg ${String(currentCategory) === String(cat.id_tipo_producto) ? 'bg-primary/10 text-primary font-semibold' : 'text-slate-600 dark:text-slate-400'} hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-sm">
+                    <a class="category-btn flex items-center gap-3 flex-1"
+                        href="#" data-category="${cat.id_tipo_producto}">
+                        <span class="material-symbols-outlined text-lg">category</span> ${cat.nombre}
+                    </a>
+                    ${isAdmin() ? `
+                        <button data-id="${cat.id_tipo_producto}" data-name="${cat.nombre}" class="delete-category opacity-0 group-hover/cat:opacity-100 text-red-500 hover:text-red-600 transition-all">
+                            <span class="material-symbols-outlined text-sm">delete</span>
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+
+            // Re-attach filter listeners
+            const categoryBtn = document.querySelectorAll('.category-btn');
+            categoryBtn.forEach(btn => {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    currentCategory = btn.dataset.category;
+                    currentPage = 1;
+                    updateCategoryUI();
+                    applyFilters();
+                };
+            });
+
+            // Attach Category Delete Listeners
+            if (isAdmin()) {
+                const deleteCatBtns = document.querySelectorAll('.delete-category');
+                deleteCatBtns.forEach(btn => {
+                    btn.onclick = async (e) => {
+                        e.stopPropagation();
+                        const id = btn.dataset.id;
+                        const name = btn.dataset.name;
+
+                        if (confirm(`¿Estás seguro de que quieres eliminar la categoría "${name}"? Los productos en esta categoría no se borrarán, pero la categoría ya no será visible.`)) {
+                            const { error } = await deleteCategory(id);
+                            if (error) {
+                                showNotification('Error al eliminar categoría: ' + error, 'error');
+                            } else {
+                                showNotification('Categoría eliminada');
+                                if (currentCategory === id) currentCategory = 'all';
+                                await loadDynamicCategories();
+                                applyFilters();
+                            }
+                        }
+                    };
+                });
+            }
+        }
+    }
+
+    function setupCategoryForm() {
+        const form = document.getElementById('add-category-form');
+        if (!form || form.dataset.setup) return;
+        form.dataset.setup = "true";
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creando...';
+
+            const { data, error } = await addCategory({
+                nombre: formData.get('nombre'),
+                descripcion: formData.get('descripcion')
+            });
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Crear Categoría';
+
+            if (error) {
+                showNotification('Error al crear categoría: ' + error, 'error');
+            } else {
+                showNotification('¡Categoría creada exitosamente!');
+                form.reset();
+                await loadDynamicCategories();
+            }
+        };
+    }
+
+    function setupCategoryToggle() {
+        const select = document.getElementById('admin-category-select');
+        const newFields = document.getElementById('new-category-fields');
+        if (!select || !newFields || select.dataset.setup) return;
+        select.dataset.setup = "true";
+
+        select.addEventListener('change', () => {
+            if (select.value === 'new') {
+                newFields.classList.remove('hidden');
+                newFields.querySelectorAll('input').forEach(i => i.required = true);
+            } else {
+                newFields.classList.add('hidden');
+                newFields.querySelectorAll('input').forEach(i => i.required = false);
+            }
+        });
     }
 
     function setupAdminForm() {
@@ -238,19 +368,45 @@ document.addEventListener('DOMContentLoaded', async () => {
         form.onsubmit = async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            let categoryId = formData.get('id_tipo_producto');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Procesando...';
+
+            // Handle New Category Creation
+            if (categoryId === 'new') {
+                const newCatName = document.getElementById('new-category-name').value;
+                const newCatDesc = document.getElementById('new-category-desc').value;
+
+                const { data: newCat, error: catError } = await addCategory({
+                    nombre: newCatName,
+                    descripcion: newCatDesc
+                });
+
+                if (catError) {
+                    showNotification('Error al crear categoría: ' + catError, 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Publicar en la Tienda';
+                    return;
+                }
+
+                categoryId = newCat.id_tipo_producto;
+                await loadDynamicCategories(); // Refresh lists
+            }
+
             const productData = {
                 nombre: formData.get('nombre'),
                 precio: parseFloat(formData.get('precio')),
-                id_tipo_producto: parseInt(formData.get('id_tipo_producto')),
+                id_tipo_producto: parseInt(categoryId),
                 imagen_url: formData.get('imagen_url'),
                 codigo: formData.get('codigo'),
                 stock: parseInt(formData.get('stock')),
-                descripcion: formData.get('descripcion')
+                descripcion: formData.get('descripcion'),
+                estado: true,
+                fecha_creacion: new Date().toISOString()
             };
-
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Publicando...';
 
             const { data, error } = await addProduct(productData);
 
@@ -258,19 +414,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             submitBtn.textContent = 'Publicar en la Tienda';
 
             if (error) {
-                if (typeof showNotification === 'function') {
-                    showNotification('Error al crear producto: ' + error, 'error');
-                } else {
-                    alert('Error: ' + error);
-                }
+                showNotification('Error al crear producto: ' + error, 'error');
             } else {
-                if (typeof showNotification === 'function') {
-                    showNotification('¡Producto publicado exitosamente!');
-                } else {
-                    alert('¡Producto publicado!');
-                }
+                showNotification('¡Producto publicado exitosamente!');
                 form.reset();
-                applyFilters(); // Refresh the grid
+                document.getElementById('new-category-fields').classList.add('hidden');
+                allProducts = await fetchProducts(); // Full refresh to get joined data
+                applyFilters();
             }
         };
     }

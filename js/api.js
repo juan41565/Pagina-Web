@@ -34,8 +34,9 @@ async function supabaseFetch(endpoint, options = {}) {
 }
 
 async function fetchProducts() {
-    // PostgREST join syntax: select=*,tipo_producto(nombre)
-    const { data, error } = await supabaseFetch('producto?select=*,tipo_producto(nombre)');
+    // Only fetch products with estado = true
+    const endpoint = 'producto?select=*,tipo_producto(nombre)&estado=eq.true';
+    const { data, error } = await supabaseFetch(endpoint);
 
     if (error) {
         // Fallback if join fails
@@ -117,8 +118,10 @@ async function addProduct(productData) {
 }
 
 async function deleteProduct(productId) {
+    // Logical delete: set estado to false
     const { error } = await supabaseFetch(`producto?id_producto=eq.${productId}`, {
-        method: 'DELETE'
+        method: 'PATCH',
+        body: JSON.stringify({ estado: false })
     });
     return { error };
 }
@@ -126,6 +129,35 @@ async function updateProductStock(productId, newStock) {
     const { error } = await supabaseFetch(`producto?id_producto=eq.${productId}`, {
         method: 'PATCH',
         body: JSON.stringify({ stock: newStock })
+    });
+    return { error };
+}
+
+async function fetchCategories() {
+    const { data, error } = await supabaseFetch('tipo_producto?select=*&estado=eq.true&order=nombre.asc');
+    return data || [];
+}
+
+async function addCategory(categoryData) {
+    const { data, error } = await supabaseFetch('tipo_producto', {
+        method: 'POST',
+        body: JSON.stringify({
+            ...categoryData,
+            estado: true,
+            fecha_creacion: new Date().toISOString()
+        })
+    });
+
+    return {
+        data: data ? data[0] : null,
+        error
+    };
+}
+
+async function deleteCategory(categoryId) {
+    const { error } = await supabaseFetch(`tipo_producto?id_tipo_producto=eq.${categoryId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ estado: false })
     });
     return { error };
 }
