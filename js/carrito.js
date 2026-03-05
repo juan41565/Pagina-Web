@@ -22,6 +22,17 @@ function saveCart() {
 // Add item to cart
 function addToCart(product) {
     const existingItem = cart.find(item => item.id === product.id);
+    const currentQuantity = existingItem ? existingItem.quantity : 0;
+
+    if (currentQuantity + 1 > product.stock) {
+        if (typeof showNotification === 'function') {
+            showNotification(`Lo sentimos, solo quedan ${product.stock} unidades de este producto.`, 'error');
+        } else {
+            alert(`No hay suficiente stock. Solo quedan ${product.stock} unidades.`);
+        }
+        return;
+    }
+
     if (existingItem) {
         existingItem.quantity += 1;
     } else {
@@ -92,6 +103,13 @@ function getCart() {
 function updateQuantity(productId, delta) {
     const existingItem = cart.find(item => item.id === productId);
     if (existingItem) {
+        if (delta > 0 && existingItem.quantity + delta > existingItem.stock) {
+            if (typeof showNotification === 'function') {
+                showNotification(`No hay más stock disponible para este producto.`, 'error');
+            }
+            return;
+        }
+
         existingItem.quantity += delta;
         if (existingItem.quantity < 1) {
             deleteItemFromCart(productId);
@@ -240,6 +258,12 @@ async function processCheckout(metodoPago) {
             showNotification('Error al guardar detalles: ' + detalleError, 'error');
         }
     } else {
+        // Update stock for each product
+        for (const item of cart) {
+            const newStock = item.stock - item.quantity;
+            await updateProductStock(item.id_producto || item.id, newStock);
+        }
+
         if (typeof showNotification === 'function') {
             showNotification('¡Compra realizada con éxito! Gracias por elegir V&V.', 'success');
         }
