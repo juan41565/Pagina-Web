@@ -160,7 +160,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const paginatedProducts = filtered.slice(startIndex, startIndex + itemsPerPage);
 
         renderProducts(paginatedProducts);
-        renderPagination(totalItems);
+        renderPagination(filtered.length);
+        checkAdminControls();
     }
 
     function renderPagination(totalItems) {
@@ -216,6 +217,63 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    function checkAdminControls() {
+        const controls = document.getElementById('admin-controls');
+        if (!controls) return;
+
+        if (isAdmin()) {
+            controls.classList.remove('hidden');
+            setupAdminForm();
+        } else {
+            controls.classList.add('hidden');
+        }
+    }
+
+    function setupAdminForm() {
+        const form = document.getElementById('add-product-form');
+        if (!form || form.dataset.setup) return;
+        form.dataset.setup = "true";
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const productData = {
+                nombre: formData.get('nombre'),
+                precio: parseFloat(formData.get('precio')),
+                id_tipo_producto: parseInt(formData.get('id_tipo_producto')),
+                imagen_url: formData.get('imagen_url'),
+                codigo: formData.get('codigo'),
+                stock: parseInt(formData.get('stock')),
+                descripcion: formData.get('descripcion')
+            };
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Publicando...';
+
+            const { data, error } = await addProduct(productData);
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Publicar en la Tienda';
+
+            if (error) {
+                if (typeof showNotification === 'function') {
+                    showNotification('Error al crear producto: ' + error, 'error');
+                } else {
+                    alert('Error: ' + error);
+                }
+            } else {
+                if (typeof showNotification === 'function') {
+                    showNotification('¡Producto publicado exitosamente!');
+                } else {
+                    alert('¡Producto publicado!');
+                }
+                form.reset();
+                applyFilters(); // Refresh the grid
+            }
+        };
+    }
+
     function renderEmptyState() {
         productGrid.innerHTML = `
             <div class="col-span-full py-20 text-center">
@@ -240,14 +298,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="flex flex-col px-1 pb-2">
                     <div class="flex justify-between items-start">
                         <h3 class="text-slate-900 dark:text-slate-100 font-bold text-lg">${product.nombre}</h3>
-                        <button class="text-slate-400 hover:text-primary transition-colors">
-                            <span class="material-symbols-outlined">favorite</span>
-                        </button>
+                        <div class="flex gap-2">
+                            ${isAdmin() ? `
+                                <button data-id="${product.id_producto}" class="delete-product text-red-500 hover:text-red-600 transition-colors">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            ` : ''}
+                            <button class="text-slate-400 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined">favorite</span>
+                            </button>
+                        </div>
                     </div>
                     <p class="text-slate-500 text-sm mt-1">${product.tipo_producto ? product.tipo_producto.nombre : 'General'}</p>
                     <div class="flex items-center justify-between mt-4">
-                        <span class="text-primary text-xl font-bold">$${parseFloat(product.precio).toLocaleString()}</span>
-                        <button data-id="${product.id_producto}" data-price="${product.precio}" class="add-to-cart bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity">
+                        <div class="flex flex-col">
+                            <span class="text-primary text-xl font-bold">$${parseFloat(product.precio).toLocaleString()}</span>
+                            <span class="text-[10px] uppercase tracking-widest font-bold ${product.stock > 0 ? 'text-slate-400' : 'text-red-500'} mt-1">
+                                ${product.stock > 0 ? `${product.stock} disponibles` : 'Agotado'}
+                            </span>
+                        </div>
+                        <button data-id="${product.id_producto}" 
+                                data-price="${product.precio}" 
+                                data-name="${product.nombre}"
+                                data-image="${product.imagen_url}"
+                                data-stock="${product.stock}"
+                                ${product.stock <= 0 ? 'disabled' : ''}
+                                class="add-to-cart bg-slate-900 dark:bg-primary text-white dark:text-slate-900 rounded-lg p-2 flex items-center justify-center hover:opacity-90 transition-opacity disabled:opacity-20 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-xl">add_shopping_cart</span>
                         </button>
                     </div>
@@ -255,6 +331,33 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `).join('');
         attachAddToCartListeners();
+        attachAdminListeners();
+    }
+
+    function isAdmin() {
+        const user = JSON.parse(localStorage.getItem('user'));
+        return user && user.email === 'admin@123.com';
+    }
+
+    function attachAdminListeners() {
+        const deleteButtons = document.querySelectorAll('.delete-product');
+        deleteButtons.forEach(btn => {
+            btn.onclick = async (e) => {
+                e.preventDefault();
+                const productId = btn.dataset.id;
+                if (confirm('¿Estás seguro de que deseas eliminar este producto permanentemente?')) {
+                    const { error } = await deleteProduct(productId);
+                    if (error) {
+                        showNotification('Error al eliminar: ' + error, 'error');
+                    } else {
+                        showNotification('Producto eliminado');
+                        applyFilters(); // Re-render list
+                        // Optimization: remove from local allProducts too
+                        allProducts = allProducts.filter(p => p.id_producto != productId);
+                    }
+                }
+            };
+        });
     }
 
     // Newsletter Subscription

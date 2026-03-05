@@ -246,6 +246,14 @@ function updateAuthUI() {
     if (user) {
         guestOptions?.classList.add('hidden');
         userOptions?.classList.remove('hidden');
+
+        // Admin check
+        const adminBtn = document.getElementById('admin-panel-btn');
+        if (user.email === 'admin@123.com') {
+            adminBtn?.classList.remove('hidden');
+        } else {
+            adminBtn?.classList.add('hidden');
+        }
     } else {
         guestOptions?.classList.remove('hidden');
         userOptions?.classList.add('hidden');

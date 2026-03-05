@@ -151,6 +151,69 @@
                         <h1 class="text-3xl font-extrabold tracking-tight">Vogue &amp; Virtue</h1>
                     </div>
                 </div>
+                <div id="admin-controls"
+                    class="hidden mb-12 bg-slate-50 dark:bg-slate-900/50 p-8 rounded-3xl border-2 border-dashed border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="material-symbols-outlined text-primary">add_circle</span>
+                        <h2 class="text-xl font-bold uppercase tracking-tight">Añadir Nuevo Producto</h2>
+                    </div>
+                    <form id="add-product-form" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="space-y-2">
+                            <label
+                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nombre</label>
+                            <input type="text" name="nombre" required
+                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Precio</label>
+                            <input type="number" name="precio" required
+                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Categoría</label>
+                            <select name="id_tipo_producto" required
+                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                                <option value="1">Electrónica</option>
+                                <option value="2">Ropa</option>
+                                <option value="3">Hogar</option>
+                                <option value="4">Deportes</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Código</label>
+                            <input type="text" name="codigo" required
+                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Stock</label>
+                            <input type="number" name="stock" required
+                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Imagen
+                                URL</label>
+                            <input type="url" name="imagen_url" required
+                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all"
+                                placeholder="https://...">
+                        </div>
+                        <div class="space-y-2 lg:col-span-4">
+                            <label
+                                class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Descripción</label>
+                            <textarea name="descripcion" required rows="2"
+                                class="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 text-sm outline-none focus:border-primary transition-all resize-none"></textarea>
+                        </div>
+                        <div class="lg:col-span-4 flex justify-end">
+                            <button type="submit"
+                                class="bg-primary text-background-dark px-8 py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all">
+                                Publicar en la Tienda
+                            </button>
+                        </div>
+                    </form>
+                </div>
                 <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <!-- Products will be loaded here -->
                     <div class="col-span-full py-20 text-center">
@@ -396,6 +459,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="js/api.js"></script>
     <script src="js/carrito.js"></script>

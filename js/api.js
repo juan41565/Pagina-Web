@@ -107,3 +107,25 @@ async function getHistorialVentas(clienteId) {
 
     return { data, error };
 }
+// Product management (Admin)
+async function addProduct(productData) {
+    const { data, error } = await supabaseFetch('producto', {
+        method: 'POST',
+        body: JSON.stringify(productData)
+    });
+    return { data, error };
+}
+
+async function deleteProduct(productId) {
+    const { error } = await supabaseFetch(`producto?id_producto=eq.${productId}`, {
+        method: 'DELETE'
+    });
+    return { error };
+}
+async function updateProductStock(productId, newStock) {
+    const { error } = await supabaseFetch(`producto?id_producto=eq.${productId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ stock: newStock })
+    });
+    return { error };
+}
