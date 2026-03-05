@@ -191,15 +191,15 @@
                 <h3 class="text-2xl font-light mb-8">Únete a la Vanguardia</h3>
                 <p class="text-slate-500 mb-10 max-w-lg mx-auto">Recibe novedades curadas y acceso exclusivo a
                     colaboraciones de edición limitada.</p>
-                <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                    <input
+                <form id="newsletter-form" class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                    <input id="newsletter-email"
                         class="flex-1 bg-white dark:bg-background-dark border border-slate-300 dark:border-primary/20 rounded-lg px-6 py-3 focus:ring-primary focus:border-primary"
-                        placeholder="Correo electrónico" type="email" />
-                    <button
+                        placeholder="Correo electrónico" type="email" required />
+                    <button type="submit"
                         class="bg-primary text-background-dark font-bold px-8 py-3 rounded-lg hover:brightness-110 transition-all">
                         Suscribirse
                     </button>
-                </div>
+                </form>
             </div>
         </section>
     </main>

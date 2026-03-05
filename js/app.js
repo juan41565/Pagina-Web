@@ -257,5 +257,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         attachAddToCartListeners();
     }
 
-    attachAddToCartListeners();
+    // Newsletter Subscription
+    const newsletterForm = document.getElementById('newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.onsubmit = (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletter-email');
+            const email = emailInput.value;
+
+            if (typeof showNotification === 'function') {
+                showNotification(`¡Gracias por unirse a la vanguardia, ${email}!`, 'success');
+            } else {
+                alert(`¡Gracias por unirse!`);
+            }
+
+            emailInput.value = '';
+        };
+    }
+
 });

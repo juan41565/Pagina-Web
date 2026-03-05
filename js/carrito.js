@@ -1,9 +1,21 @@
-// Cart state
-let cart = JSON.parse(localStorage.getItem('vogue_virtue_cart')) || [];
+// Cart state initialization with safety
+let cart = [];
+try {
+    const savedCart = localStorage.getItem('vogue_virtue_cart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    }
+} catch (e) {
+    console.warn('LocalStorage access denied or corrupted. Cart will not persist across sessions.', e);
+}
 
-// Save cart to localStorage
+// Save cart to localStorage with safety
 function saveCart() {
-    localStorage.setItem('vogue_virtue_cart', JSON.stringify(cart));
+    try {
+        localStorage.setItem('vogue_virtue_cart', JSON.stringify(cart));
+    } catch (e) {
+        console.warn('Failed to save to localStorage:', e);
+    }
     updateCartCount();
 }
 
@@ -63,8 +75,16 @@ function showToast(name, image) {
     }, 4000);
 }
 
-// Get cart items
+// Get cart items with sync attempt
 function getCart() {
+    try {
+        const savedCart = localStorage.getItem('vogue_virtue_cart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+        }
+    } catch (e) {
+        // Silently fail, use current session cart
+    }
     return cart;
 }
 
