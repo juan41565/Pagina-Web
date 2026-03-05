@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentCategory = 'all';
     let currentPrice = 5000;
     let currentSearch = '';
+    let currentPage = 1;
+    const itemsPerPage = 8;
 
     if (productGrid) {
         console.log('Product grid found, starting fetch...');
@@ -67,6 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.onclick = (e) => {
                 e.preventDefault();
                 currentCategory = btn.dataset.category;
+                currentPage = 1; // Reset to first page
                 updateCategoryUI();
                 applyFilters();
             };
@@ -79,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             priceRange.oninput = (e) => {
                 currentPrice = parseInt(e.target.value);
                 priceValue.textContent = `$${currentPrice.toLocaleString()}`;
+                currentPage = 1; // Reset to first page
                 applyFilters();
             };
         }
@@ -89,8 +93,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             searchInput.addEventListener('input', (e) => {
                 const query = e.target.value.toLowerCase().trim();
 
-                // If on index.html and user presses Enter or types significant query, redirect (optional refinement)
-                // For now, if we are NOT on collection page, redirect on typing
                 if (!productGrid) {
                     if (query.length > 1) {
                         window.location.href = `coleccion.html?search=${encodeURIComponent(query)}`;
@@ -99,6 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
 
                 currentSearch = query;
+                currentPage = 1; // Reset to first page
                 applyFilters();
             });
 
@@ -117,7 +120,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function updateCategoryUI() {
-        // ... (existing updateCategoryUI)
+        const categoryBtn = document.querySelectorAll('.category-btn');
+        categoryBtn.forEach(btn => {
+            if (btn.dataset.category === currentCategory) {
+                btn.classList.add('bg-primary/10', 'text-primary', 'font-semibold');
+                btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+            } else {
+                btn.classList.remove('bg-primary/10', 'text-primary', 'font-semibold');
+                btn.classList.add('text-slate-600', 'dark:text-slate-400');
+            }
+        });
     }
 
     function applyFilters() {
@@ -142,8 +154,67 @@ document.addEventListener('DOMContentLoaded', async () => {
             );
         }
 
-        renderProducts(filtered);
+        // Pagination calculation
+        const totalItems = filtered.length;
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const paginatedProducts = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+        renderProducts(paginatedProducts);
+        renderPagination(totalItems);
     }
+
+    function renderPagination(totalItems) {
+        const paginationContainer = document.getElementById('pagination-container');
+        if (!paginationContainer) return;
+
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+
+        // Previous button
+        html += `
+            <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} 
+                class="flex items-center justify-center w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+        `;
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                html += `<button class="w-10 h-10 rounded-lg bg-primary text-slate-900 font-bold">${i}</button>`;
+            } else {
+                html += `
+                    <button onclick="changePage(${i})" 
+                        class="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-primary">
+                        ${i}
+                    </button>
+                `;
+            }
+        }
+
+        // Next button
+        html += `
+            <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} 
+                class="flex items-center justify-center w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 hover:border-primary disabled:opacity-50 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        `;
+
+        paginationContainer.innerHTML = html;
+    }
+
+    // Global function for pagination buttons
+    window.changePage = (page) => {
+        currentPage = page;
+        applyFilters();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     function renderEmptyState() {
         productGrid.innerHTML = `
