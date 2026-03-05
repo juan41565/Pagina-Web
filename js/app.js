@@ -314,9 +314,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="flex items-center justify-between mt-4">
                         <div class="flex flex-col">
                             <span class="text-primary text-xl font-bold">$${parseFloat(product.precio).toLocaleString()}</span>
-                            <span class="text-[10px] uppercase tracking-widest font-bold ${product.stock > 0 ? 'text-slate-400' : 'text-red-500'} mt-1">
-                                ${product.stock > 0 ? `${product.stock} disponibles` : 'Agotado'}
-                            </span>
+                            ${isAdmin() ? `
+                                <div class="flex items-center gap-2 mt-2">
+                                    <input type="number" value="${product.stock}" 
+                                        class="stock-input w-16 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded px-2 py-1 text-xs focus:ring-primary focus:border-primary"
+                                        title="Actualizar Stock">
+                                    <button data-id="${product.id_producto}" class="update-stock text-primary hover:text-primary/80 transition-colors" title="Guardar Stock">
+                                        <span class="material-symbols-outlined text-sm">save</span>
+                                    </button>
+                                </div>
+                            ` : `
+                                <span class="text-[10px] uppercase tracking-widest font-bold ${product.stock > 0 ? 'text-slate-400' : 'text-red-500'} mt-1">
+                                    ${product.stock > 0 ? `${product.stock} disponibles` : 'Agotado'}
+                                </span>
+                            `}
                         </div>
                         <button data-id="${product.id_producto}" 
                                 data-price="${product.precio}" 
@@ -341,6 +352,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function attachAdminListeners() {
+        // Delete functionality
         const deleteButtons = document.querySelectorAll('.delete-product');
         deleteButtons.forEach(btn => {
             btn.onclick = async (e) => {
@@ -352,10 +364,47 @@ document.addEventListener('DOMContentLoaded', async () => {
                         showNotification('Error al eliminar: ' + error, 'error');
                     } else {
                         showNotification('Producto eliminado');
-                        applyFilters(); // Re-render list
-                        // Optimization: remove from local allProducts too
                         allProducts = allProducts.filter(p => p.id_producto != productId);
+                        applyFilters();
                     }
+                }
+            };
+        });
+
+        // Stock update functionality
+        const updateButtons = document.querySelectorAll('.update-stock');
+        updateButtons.forEach(btn => {
+            btn.onclick = async (e) => {
+                e.preventDefault();
+                const productId = btn.dataset.id;
+                const container = btn.closest('.group');
+                const stockInput = container.querySelector('.stock-input');
+                const newStock = parseInt(stockInput.value);
+
+                if (isNaN(newStock) || newStock < 0) {
+                    showNotification('Por favor ingrese un stock válido', 'error');
+                    return;
+                }
+
+                btn.disabled = true;
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">refresh</span>';
+
+                const { error } = await updateProductStock(productId, newStock);
+
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+
+                if (error) {
+                    showNotification('Error al actualizar stock: ' + error, 'error');
+                } else {
+                    showNotification('Stock actualizado correctamente');
+                    // Update local state
+                    const prodIndex = allProducts.findIndex(p => String(p.id_producto) === String(productId));
+                    if (prodIndex !== -1) {
+                        allProducts[prodIndex].stock = newStock;
+                    }
+                    applyFilters(); // Re-render to reflect changes if needed
                 }
             };
         });
