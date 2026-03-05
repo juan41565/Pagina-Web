@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     numericPrice: parseFloat(btn.dataset.price || container.querySelector('.text-primary, p.font-bold').textContent.replace(/[^\d.]/g, '')),
                     image: container.querySelector('img, div[style*="background-image"]').style.backgroundImage
                         ? container.querySelector('div[style*="background-image"]').style.backgroundImage.slice(5, -2)
-                        : container.querySelector('img').src
+                        : container.querySelector('img').src,
+                    stock: btn.dataset.stock ? parseInt(btn.dataset.stock) : 99 // Default to high if not specified
                 };
                 addToCart(product);
             };
