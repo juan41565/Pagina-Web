@@ -225,9 +225,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (isAdmin()) {
             controls.classList.remove('hidden');
+            const openBinBtn = document.getElementById('open-recycle-bin');
+            if (openBinBtn) openBinBtn.classList.remove('hidden');
+
             setupAdminForm();
             setupCategoryForm();
             setupCategoryToggle();
+            setupRecycleBin();
         } else {
             controls.classList.add('hidden');
         }
@@ -558,6 +562,129 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             };
         });
+    }
+
+    function setupRecycleBin() {
+        const modal = document.getElementById('recycle-bin-modal');
+        const openBtn = document.getElementById('open-recycle-bin');
+        const closeBtn = document.getElementById('close-recycle-bin');
+
+        if (!modal || !openBtn || openBtn.dataset.setup) return;
+        openBtn.dataset.setup = "true";
+
+        const tabProducts = document.getElementById('tab-products');
+        const tabCategories = document.getElementById('tab-categories');
+        const productsContent = document.getElementById('recycle-products-content');
+        const categoriesContent = document.getElementById('recycle-categories-content');
+
+        const openModal = async () => {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            await loadRecycleContent();
+        };
+
+        const closeModal = () => {
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        };
+
+        openBtn.onclick = openModal;
+        closeBtn.onclick = closeModal;
+
+        tabProducts.onclick = () => {
+            tabProducts.classList.add('border-primary', 'text-primary');
+            tabProducts.classList.remove('border-transparent', 'text-slate-500');
+            tabCategories.classList.add('border-transparent', 'text-slate-500');
+            tabCategories.classList.remove('border-primary', 'text-primary');
+            productsContent.classList.remove('hidden');
+            categoriesContent.classList.add('hidden');
+        };
+
+        tabCategories.onclick = () => {
+            tabCategories.classList.add('border-primary', 'text-primary');
+            tabCategories.classList.remove('border-transparent', 'text-slate-500');
+            tabProducts.classList.add('border-transparent', 'text-slate-500');
+            tabProducts.classList.remove('border-primary', 'text-primary');
+            categoriesContent.classList.remove('hidden');
+            productsContent.classList.add('hidden');
+        };
+
+        async function loadRecycleContent() {
+            // Loading states
+            productsContent.innerHTML = '<div class="col-span-full py-10 text-center text-slate-500">Cargando...</div>';
+            categoriesContent.innerHTML = '<div class="col-span-full py-10 text-center text-slate-500">Cargando...</div>';
+
+            const [{ data: products }, { data: categories }] = await Promise.all([
+                fetchInactiveProducts(),
+                fetchInactiveCategories()
+            ]);
+
+            // Render Products
+            if (products.length === 0) {
+                productsContent.innerHTML = '<div class="col-span-full py-10 text-center text-slate-500 italic">No hay productos eliminados.</div>';
+            } else {
+                productsContent.innerHTML = products.map(p => `
+                    <div class="flex items-center gap-4 bg-slate-50 dark:bg-slate-950/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <div class="w-16 h-16 rounded-xl bg-slate-200 dark:bg-slate-800 bg-center bg-cover" style="background-image: url('${p.imagen_url || 'https://via.placeholder.com/400'}')"></div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm truncate">${p.nombre}</h4>
+                            <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-0.5">${p.tipo_producto?.nombre || 'General'}</p>
+                        </div>
+                        <button class="restore-product-btn bg-primary/10 text-primary hover:bg-primary hover:text-white p-2 rounded-xl transition-all" data-id="${p.id_producto}">
+                            <span class="material-symbols-outlined text-lg">settings_backup_restore</span>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // Render Categories
+            if (categories.length === 0) {
+                categoriesContent.innerHTML = '<div class="col-span-full py-10 text-center text-slate-500 italic">No hay categorías eliminadas.</div>';
+            } else {
+                categoriesContent.innerHTML = categories.map(c => `
+                    <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-950/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-slate-400">category</span>
+                            <h4 class="font-bold text-sm">${c.nombre}</h4>
+                        </div>
+                        <button class="restore-category-btn bg-primary/10 text-primary hover:bg-primary hover:text-white p-2 rounded-xl transition-all" data-id="${c.id_tipo_producto}">
+                            <span class="material-symbols-outlined text-lg">settings_backup_restore</span>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // Attach listeners
+            document.querySelectorAll('.restore-product-btn').forEach(btn => {
+                btn.onclick = async () => {
+                    const id = btn.dataset.id;
+                    const { error } = await restoreProduct(id);
+                    if (error) {
+                        showNotification('Error al restaurar: ' + error, 'error');
+                    } else {
+                        showNotification('Producto restaurado correctamente');
+                        allProducts = await fetchProducts();
+                        await loadRecycleContent();
+                        applyFilters();
+                    }
+                };
+            });
+
+            document.querySelectorAll('.restore-category-btn').forEach(btn => {
+                btn.onclick = async () => {
+                    const id = btn.dataset.id;
+                    const { error } = await restoreCategory(id);
+                    if (error) {
+                        showNotification('Error al restaurar: ' + error, 'error');
+                    } else {
+                        showNotification('Categoría restaurada correctamente');
+                        await loadDynamicCategories();
+                        await loadRecycleContent();
+                        applyFilters();
+                    }
+                };
+            });
+        }
     }
 
     // Newsletter Subscription

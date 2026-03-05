@@ -161,3 +161,29 @@ async function deleteCategory(categoryId) {
     });
     return { error };
 }
+
+async function fetchInactiveProducts() {
+    const { data, error } = await supabaseFetch('producto?select=*,tipo_producto(nombre)&estado=eq.false&order=fecha_creacion.desc');
+    return { data: data || [], error };
+}
+
+async function fetchInactiveCategories() {
+    const { data, error } = await supabaseFetch('tipo_producto?select=*&estado=eq.false&order=nombre.asc');
+    return { data: data || [], error };
+}
+
+async function restoreProduct(productId) {
+    const { error } = await supabaseFetch(`producto?id_producto=eq.${productId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ estado: true })
+    });
+    return { error };
+}
+
+async function restoreCategory(categoryId) {
+    const { error } = await supabaseFetch(`tipo_producto?id_tipo_producto=eq.${categoryId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ estado: true })
+    });
+    return { error };
+}
